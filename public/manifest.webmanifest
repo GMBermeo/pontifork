@@ -1,0 +1,18 @@
+{
+  "name": "Pontifork — tuner for cello, guitar and bass",
+  "short_name": "Pontifork",
+  "description": "Every standard, drop, open and lowered tuning, measured against the string you are tuning.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0B0A14",
+  "theme_color": "#4638D6",
+  "categories": ["music", "utilities"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

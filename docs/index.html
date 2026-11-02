@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Pontifork — every string, in tune</title>
+  <meta name="description" content="Pontifork is a free, open-source tuner for cello, guitar (6 and 7 strings) and bass (4, 5 and 6 strings), with every common standard, drop, open and lowered tuning. Use it in any browser or as an app. Nothing is recorded and nothing leaves the device.">
+  <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0B0A14" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="assets/brand/favicon.png">
+  <link rel="icon" href="assets/brand/pontifork-icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
+  <meta property="og:title" content="Pontifork — every string, in tune">
+  <meta property="og:description" content="A tuner for cello, guitar and bass, with every common standard, drop, open and lowered tuning. In your browser or on your phone. Free and open source.">
+  <meta property="og:image" content="assets/brand/og-image.png">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="#top" aria-label="Pontifork home">
+      <img src="assets/brand/pontifork-icon-512.png" alt="" width="34" height="34">
+      <span>Pontifork</span>
+    </a>
+    <nav aria-label="Sections">
+      <a href="#features">Features</a>
+      <a href="#how-to">How to use</a>
+      <a href="#tunings">Tunings</a>
+      <a href="#open-source">Open source</a>
+      <a class="button small" href="../">Open the tuner</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="pill"><span class="dot" aria-hidden="true"></span>Ponticello’s tuner, for every string</p>
+        <h1>Every string,<br><span class="accent">in tune.</span></h1>
+        <p class="lede">
+          Pontifork tunes the <strong>cello</strong>, the <strong>guitar</strong> with six or seven strings and the
+          <strong>bass</strong> with four, five or six — in every standard, drop, open and lowered tuning players
+          actually use. Open it in any browser or install the app. No account, and nothing leaves your device.
+        </p>
+        <div class="actions">
+          <a class="button" href="../">Open the tuner</a>
+          <a class="button ghost" href="#how-to">How to use it</a>
+        </div>
+        <ul class="facts" aria-label="At a glance">
+          <li><strong>53</strong><span>tunings, from drop A to open G</span></li>
+          <li><strong>±5¢</strong><span>counts as in tune</span></li>
+        </ul>
+      </div>
+      <figure class="hero-device">
+        <div class="device">
+          <video autoplay muted loop playsinline preload="metadata"
+            poster="assets/screenshots/tuner-guitar.webp"
+            aria-label="Screen recording: tuning a guitar from the low E up. Each string glides in from off pitch, the needle settles in the green, and the string gets a tick.">
+            <source src="assets/video/tour.mp4" type="video/mp4">
+          </video>
+        </div>
+        <figcaption>Tuning a guitar from the low E up, recorded from the web app.</figcaption>
+      </figure>
+    </section>
+
+    <section class="idea">
+      <img class="mark" src="assets/brand/pontifork-icon-512.png" alt="The Pontifork icon: a maple tuning fork ringing out four coloured sound waves on an indigo ground." width="170" height="170">
+      <div>
+        <p class="kicker">The mark</p>
+        <h2>A tuning fork, with Ponticello’s heart</h2>
+        <p>
+          <em>Pontifork</em> is <em>ponticello</em> — Italian for “little bridge” — and a tuning fork. The mark is
+          the fork in the bridge’s bleached maple, with the bridge’s round heart cut through its knob, ringing out
+          four waves in the colours of the four strings: C green, G red, D blue, A yellow, left to right. On iOS the
+          fork and the waves are separate Liquid Glass layers, drawn in Icon Composer the same way as Ponticello’s.
+        </p>
+      </div>
+    </section>
+
+    <section id="features" class="features">
+      <header class="section-head">
+        <p class="kicker">One engine, three instruments</p>
+        <h2>From a bass’s low B to a guitar’s high E</h2>
+      </header>
+
+      <article class="feature">
+        <div class="copy">
+          <p class="kicker">Cello, guitar and bass</p>
+          <h3>The pitch engine that never mistakes a low C</h3>
+          <p>Pontifork listens with Ponticello’s dual-rate engine, built for an instrument whose lowest note the body
+            barely radiates — and widened to reach a five-string bass in drop A at 27.5 Hz and a guitar’s twelfth
+            fret. It judges octaves by the period, not the loudest harmonic, so a low string is never read an octave
+            up and a high one never an octave down.</p>
+        </div>
+        <div class="devices trio">
+          <div class="device"><img loading="lazy" src="assets/screenshots/tuner-cello-dark.webp" alt="Cello in the dark theme: the A string in tune at plus one cent, and all four strings ticked." width="720" height="1565"></div>
+          <div class="device"><img loading="lazy" src="assets/screenshots/tuner-guitar.webp" alt="Guitar in standard tuning: the D string nine cents flat with the needle left of centre and Tune up in amber; the two lower strings ticked." width="720" height="1565"></div>
+          <div class="device"><img loading="lazy" src="assets/screenshots/tuner-bass.webp" alt="Five-string bass: the low B fourteen cents flat, Tune up." width="720" height="1565"></div>
+        </div>
+      </article>
+
+      <article class="feature reverse">
+        <div class="copy">
+          <p class="kicker">Measured against the string</p>
+          <h3>It knows which string you are tuning</h3>
+          <p>A chromatic tuner says what note you are playing. Pontifork says how far the string is from where your
+            tuning wants it. Switch to drop D and pluck the low E: it reads <strong>D2 · hearing E2 · +200¢ · tune
+            down</strong>, not “E, in tune”.</p>
+        </div>
+        <div class="devices single">
+          <div class="device"><img loading="lazy" src="assets/screenshots/drop-d.webp" alt="Drop D selected while the low string still sounds E: the dial shows D2, hearing E2, plus two hundred cents, Tune down, with the needle pinned to the sharp side." width="720" height="1565"></div>
+        </div>
+      </article>
+
+      <article class="feature">
+        <div class="copy">
+          <p class="kicker">Every tuning players use</p>
+          <h3>Standard, lowered, drop, open and scordatura</h3>
+          <p>Half and whole step down, C♯ to B standard, every drop from D to A — and to F♯ on seven strings —
+            double drop D, open D, E, G, A and C, DADGAD, bass tenor and high C, and the cello’s scordaturas for
+            Bach and Kodály. Each one shows its open strings before you pick it.</p>
+        </div>
+        <div class="devices single">
+          <div class="device"><img loading="lazy" src="assets/screenshots/tunings.webp" alt="The tuning list for six-string guitar: standard and lowered tunings, then the drop tunings, each with its open-string letters; Drop D is ticked." width="720" height="1565"></div>
+        </div>
+      </article>
+
+      <article class="feature reverse">
+        <div class="copy">
+          <p class="kicker">Lock a string</p>
+          <h3>Bringing a string a long way</h3>
+          <p>Pontifork follows whichever string you play. When a string is so far off that its neighbour is nearer —
+            dropping a seven-string from B to A, say — tap it, and the tuner stays on that string however far away it
+            starts. Tap it again to go back to following.</p>
+        </div>
+        <div class="devices single">
+          <div class="device"><img loading="lazy" src="assets/screenshots/locked-seven.webp" alt="Seven-string guitar in drop A, locked to string seven: it still sounds B, so the dial shows A1, hearing B1, plus two hundred cents, Tune down." width="720" height="1565"></div>
+        </div>
+      </article>
+
+      <article class="feature">
+        <div class="copy">
+          <p class="kicker">Reference pitch</p>
+          <h3>Tune to the room you are playing in</h3>
+          <p>A = 440 Hz is concert pitch, but orchestras often sit at 442, and baroque ensembles at 415. Move the
+            reference a hertz at a time, from 415 to 466, and every string moves with it. It is remembered, along
+            with your instrument and tuning.</p>
+        </div>
+        <div class="devices single">
+          <div class="device"><img loading="lazy" src="assets/screenshots/reference.webp" alt="The A string in tune against a reference of A equals 442 hertz, with the reference pitch card and its reset button below." width="720" height="1565"></div>
+        </div>
+      </article>
+    </section>
+
+    <section id="how-to" class="how-to">
+      <header class="section-head">
+        <p class="kicker">How to use it</p>
+        <h2>Tune in six steps</h2>
+        <p class="section-lede">The same on a phone, a tablet or a computer.</p>
+      </header>
+      <ol class="steps">
+        <li>
+          <h3>Open it and let it listen</h3>
+          <p>Open the tuner in a browser — or the app — and allow the microphone when asked. On the web, press
+            <strong>Enable microphone</strong> first: a browser only listens after you ask it to.</p>
+        </li>
+        <li>
+          <h3>Pick your instrument</h3>
+          <p>Cello, guitar or bass, and for guitar and bass how many strings it has. Pontifork remembers the choice.</p>
+        </li>
+        <li>
+          <h3>Choose a tuning</h3>
+          <p>Press <strong>Change</strong> on the tuning card. Tunings are grouped — standard and lowered, drop,
+            open, alternate — each with the notes of its open strings.</p>
+        </li>
+        <li>
+          <h3>Play one string at a time</h3>
+          <p>Pluck or bow one open string and let it ring. The big letter is the note that string should be; the
+            needle and the number show how far off it is, in cents.</p>
+        </li>
+        <li>
+          <h3>Follow the needle</h3>
+          <p><strong>Tune up</strong> means flat: tighten. <strong>Tune down</strong> means sharp: loosen. Small
+            turns, then let the string ring again.</p>
+        </li>
+        <li>
+          <h3>Hold it, then check them all</h3>
+          <p>Hold a string in the green for a moment and it gets a tick. Tightening one string changes the pull on
+            the others, so go round them all once more.</p>
+        </li>
+      </ol>
+
+      <div class="dial-key">
+        <div class="key-copy">
+          <p class="kicker">Reading the dial</p>
+          <h3>Green, amber, red</h3>
+          <p>The dial spans half a semitone either way; beyond that the needle waits at the edge and the number keeps
+            counting.</p>
+        </div>
+        <ul class="key" aria-label="What the colours mean">
+          <li><span class="swatch good" aria-hidden="true"></span><strong>In tune</strong><span>within 5 cents — the smallest step most ears can hear</span></li>
+          <li><span class="swatch near" aria-hidden="true"></span><strong>Close</strong><span>within 20 cents — a fine adjustment away</span></li>
+          <li><span class="swatch far" aria-hidden="true"></span><strong>Off</strong><span>further than that — turn with confidence</span></li>
+        </ul>
+      </div>
+
+      <ul class="tips">
+        <li><strong>Get close.</strong> Hold the phone near the body of the instrument, or the laptop near the amp, in as quiet a room as you can find.</li>
+        <li><strong>Let it ring.</strong> The first instant of a pluck or a bow stroke is noise; Pontifork waits it out, so give it a moment.</li>
+        <li><strong>Low strings.</strong> Phone microphones barely hear a bass’s low B. Pontifork tunes by the harmonics above it, so pluck firmly and let it sustain.</li>
+        <li><strong>Far off?</strong> Tap the string to lock onto it, so a neighbouring string cannot take over while you bring it up or down.</li>
+      </ul>
+    </section>
+
+    <section id="tunings" class="catalogue">
+      <header class="section-head">
+        <p class="kicker">The catalogue</p>
+        <h2>Every tuning, lowest string first</h2>
+        <p class="section-lede">Generated from the app’s own catalogue, and checked against it by the test suite.</p>
+      </header>
+      <div class="setups">
+<!-- tunings:start -->
+        <article class="setup" id="setup-cello-4" aria-labelledby="setup-cello-4-title">
+          <h3 id="setup-cello-4-title">Cello</h3>
+          <p class="family">Standard and lowered</p>
+          <ul>
+            <li><span class="name">Standard</span><span class="notes">C G D A</span></li>
+            <li><span class="name">Half step down</span><span class="notes">B F♯ C♯ G♯</span></li>
+          </ul>
+          <p class="family">Scordatura</p>
+          <ul>
+            <li><span class="name">Bach Suite No. 5</span><span class="notes">C G D G</span></li>
+            <li><span class="name">Kodály Sonata, Op. 8</span><span class="notes">B F♯ D A</span></li>
+          </ul>
+        </article>
+        <article class="setup" id="setup-guitar-6" aria-labelledby="setup-guitar-6-title">
+          <h3 id="setup-guitar-6-title">Guitar · 6 strings</h3>
+          <p class="family">Standard and lowered</p>
+          <ul>
+            <li><span class="name">Standard</span><span class="notes">E A D G B E</span></li>
+            <li><span class="name">Half step down</span><span class="notes">E♭ A♭ D♭ G♭ B♭ E♭</span></li>
+            <li><span class="name">Whole step down</span><span class="notes">D G C F A D</span></li>
+            <li><span class="name">C♯ standard</span><span class="notes">C♯ F♯ B E G♯ C♯</span></li>
+            <li><span class="name">C standard</span><span class="notes">C F B♭ E♭ G C</span></li>
+            <li><span class="name">B standard</span><span class="notes">B E A D F♯ B</span></li>
+          </ul>
+          <p class="family">Drop</p>
+          <ul>
+            <li><span class="name">Drop D</span><span class="notes">D A D G B E</span></li>
+            <li><span class="name">Drop C♯</span><span class="notes">C♯ G♯ C♯ F♯ A♯ D♯</span></li>
+            <li><span class="name">Drop C</span><span class="notes">C G C F A D</span></li>
+            <li><span class="name">Drop B</span><span class="notes">B F♯ B E G♯ C♯</span></li>
+            <li><span class="name">Drop A♯ / B♭</span><span class="notes">B♭ F B♭ E♭ G C</span></li>
+            <li><span class="name">Drop A</span><span class="notes">A E A D F♯ B</span></li>
+            <li><span class="name">Double drop D</span><span class="notes">D A D G B D</span></li>
+          </ul>
+          <p class="family">Open</p>
+          <ul>
+            <li><span class="name">Open D</span><span class="notes">D A D F♯ A D</span></li>
+            <li><span class="name">Open D minor</span><span class="notes">D A D F A D</span></li>
+            <li><span class="name">Open E</span><span class="notes">E B E G♯ B E</span></li>
+            <li><span class="name">Open G</span><span class="notes">D G D G B D</span></li>
+            <li><span class="name">Open A</span><span class="notes">E A E A C♯ E</span></li>
+            <li><span class="name">Open C</span><span class="notes">C G C G C E</span></li>
+          </ul>
+          <p class="family">Alternate</p>
+          <ul>
+            <li><span class="name">DADGAD</span><span class="notes">D A D G A D</span></li>
+          </ul>
+        </article>
+        <article class="setup" id="setup-guitar-7" aria-labelledby="setup-guitar-7-title">
+          <h3 id="setup-guitar-7-title">Guitar · 7 strings</h3>
+          <p class="family">Standard and lowered</p>
+          <ul>
+            <li><span class="name">Standard</span><span class="notes">B E A D G B E</span></li>
+            <li><span class="name">Half step down</span><span class="notes">B♭ E♭ A♭ D♭ G♭ B♭ E♭</span></li>
+            <li><span class="name">Whole step down</span><span class="notes">A D G C F A D</span></li>
+          </ul>
+          <p class="family">Drop</p>
+          <ul>
+            <li><span class="name">Drop A</span><span class="notes">A E A D G B E</span></li>
+            <li><span class="name">Drop G♯ / A♭</span><span class="notes">A♭ E♭ A♭ D♭ G♭ B♭ E♭</span></li>
+            <li><span class="name">Drop G</span><span class="notes">G D G C F A D</span></li>
+            <li><span class="name">Drop F♯</span><span class="notes">F♯ C♯ F♯ B E G♯ C♯</span></li>
+          </ul>
+        </article>
+        <article class="setup" id="setup-bass-4" aria-labelledby="setup-bass-4-title">
+          <h3 id="setup-bass-4-title">Bass · 4 strings</h3>
+          <p class="family">Standard and lowered</p>
+          <ul>
+            <li><span class="name">Standard</span><span class="notes">E A D G</span></li>
+            <li><span class="name">Half step down</span><span class="notes">E♭ A♭ D♭ G♭</span></li>
+            <li><span class="name">Whole step down</span><span class="notes">D G C F</span></li>
+            <li><span class="name">C♯ standard</span><span class="notes">C♯ F♯ B E</span></li>
+            <li><span class="name">C standard</span><span class="notes">C F B♭ E♭</span></li>
+            <li><span class="name">B standard (BEAD)</span><span class="notes">B E A D</span></li>
+          </ul>
+          <p class="family">Drop</p>
+          <ul>
+            <li><span class="name">Drop D</span><span class="notes">D A D G</span></li>
+            <li><span class="name">Drop C♯</span><span class="notes">C♯ G♯ C♯ F♯</span></li>
+            <li><span class="name">Drop C</span><span class="notes">C G C F</span></li>
+            <li><span class="name">Drop B</span><span class="notes">B F♯ B E</span></li>
+            <li><span class="name">Drop A♯ / B♭</span><span class="notes">B♭ F B♭ E♭</span></li>
+            <li><span class="name">Drop A</span><span class="notes">A E A D</span></li>
+          </ul>
+          <p class="family">Alternate</p>
+          <ul>
+            <li><span class="name">Tenor (ADGC)</span><span class="notes">A D G C</span></li>
+          </ul>
+        </article>
+        <article class="setup" id="setup-bass-5" aria-labelledby="setup-bass-5-title">
+          <h3 id="setup-bass-5-title">Bass · 5 strings</h3>
+          <p class="family">Standard and lowered</p>
+          <ul>
+            <li><span class="name">Standard</span><span class="notes">B E A D G</span></li>
+            <li><span class="name">Half step down</span><span class="notes">B♭ E♭ A♭ D♭ G♭</span></li>
+            <li><span class="name">Whole step down</span><span class="notes">A D G C F</span></li>
+          </ul>
+          <p class="family">Drop</p>
+          <ul>
+            <li><span class="name">Drop A</span><span class="notes">A E A D G</span></li>
+          </ul>
+          <p class="family">Alternate</p>
+          <ul>
+            <li><span class="name">High C (EADGC)</span><span class="notes">E A D G C</span></li>
+          </ul>
+        </article>
+        <article class="setup" id="setup-bass-6" aria-labelledby="setup-bass-6-title">
+          <h3 id="setup-bass-6-title">Bass · 6 strings</h3>
+          <p class="family">Standard and lowered</p>
+          <ul>
+            <li><span class="name">Standard</span><span class="notes">B E A D G C</span></li>
+            <li><span class="name">Half step down</span><span class="notes">B♭ E♭ A♭ D♭ G♭ B</span></li>
+            <li><span class="name">Whole step down</span><span class="notes">A D G C F B♭</span></li>
+          </ul>
+          <p class="family">Drop</p>
+          <ul>
+            <li><span class="name">Drop A</span><span class="notes">A E A D G C</span></li>
+          </ul>
+        </article>
+<!-- tunings:end -->
+      </div>
+    </section>
+
+    <section id="web" class="web">
+      <header class="section-head">
+        <p class="kicker">On any device</p>
+        <h2>A tuner in any browser</h2>
+        <p class="section-lede">The web app is the same app — the same engine, the same tunings — on a phone, a
+          tablet or a computer. Add it to your home screen and it opens full screen, like the native one.</p>
+      </header>
+      <div class="screens" role="group" aria-label="The web app on a computer, in light and dark">
+        <figure>
+          <div class="screen"><img loading="lazy" src="assets/screenshots/desktop.webp" alt="The web app in a wide window: the dial and strings on the left, the instrument, tuning, microphone and reference pitch on the right. The G string is in tune at plus four cents." width="1600" height="1000"></div>
+          <figcaption>Light</figcaption>
+        </figure>
+        <figure>
+          <div class="screen"><img loading="lazy" src="assets/screenshots/desktop-dark.webp" alt="The web app in the dark theme, tuning a four-string bass to drop D: the low string still sounds E, plus two hundred cents, Tune down." width="1600" height="1000"></div>
+          <figcaption>Dark — it follows your system</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="principles">
+      <header class="section-head">
+        <p class="kicker">Promises</p>
+        <h2>What it will not do</h2>
+      </header>
+      <ul>
+        <li><strong>No recording, no upload.</strong> The microphone is analysed on your device as it arrives; nothing is stored and nothing is sent anywhere.</li>
+        <li><strong>No account, no ads, no tracking.</strong> Your instrument, tuning and reference pitch are kept on your device, and that is all it keeps.</li>
+        <li><strong>No guessing behind your back.</strong> When a string is far from its target, it tells you what it actually hears, and which way to turn.</li>
+      </ul>
+    </section>
+
+    <section id="open-source" class="open-source">
+      <div>
+        <p class="kicker">Free and open source</p>
+        <h2>Build it, fix it, make it yours</h2>
+        <p>
+          Pontifork is built with Expo and React Native for iOS, Android and the web, from Ponticello’s pitch
+          engine. The core — the engine, the string targeting and the tuning catalogue — is pure TypeScript, tested
+          against every open string of every tuning. Add a tuning in one line and the tests check it keeps the
+          promise in its name.
+        </p>
+        <div class="actions">
+          <a class="button" href="https://github.com/GMBermeo/pontifork">View the source</a>
+          <a class="button ghost" href="https://github.com/GMBermeo/ponticello">Ponticello</a>
+        </div>
+      </div>
+      <pre class="code" aria-label="Getting started"><code>git clone https://github.com/GMBermeo/pontifork
+cd pontifork
+npm install
+npm run web          # the tuner in your browser
+npm run ios          # or on a phone
+npm run verify       # types, lint, tests</code></pre>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <img src="assets/brand/pontifork-wordmark.png" alt="Pontifork" class="wordmark light-only" width="200" height="50">
+    <img src="assets/brand/pontifork-wordmark-light.png" alt="Pontifork" class="wordmark dark-only" width="200" height="50">
+    <p>
+      App development by <a href="https://gm.bermeo.dev">Guilherme Yuri Bermeo</a> ·
+      <a href="https://gm.bermeo.dev">gm.bermeo.dev</a>
+    </p>
+    <p class="fine">
+      Released under the MIT License. Screens shown are the web app, captured while it listened to a test tone
+      — every reading on them is what the pitch engine made of it.
+    </p>
+  </footer>
+</body>
+</html>

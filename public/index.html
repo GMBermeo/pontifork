@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="%LANG_ISO_CODE%">
+  <head>
+    <meta charset="utf-8" />
+    <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+    <!-- viewport-fit=cover: the app pads itself with the safe-area insets, so it can draw under a notch. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>%WEB_TITLE% — tuner for cello, guitar and bass</title>
+    <meta name="description" content="A free tuner for cello, guitar and bass in your browser: every standard, drop, open and lowered tuning, measured against the string you are tuning. Nothing is recorded and nothing leaves the device." />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0B0A14" media="(prefers-color-scheme: dark)" />
+
+    <!-- Installable: a home-screen icon that opens full screen, like the native app. -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Pontifork" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+    <meta property="og:title" content="Pontifork — every string, in tune" />
+    <meta property="og:description" content="A tuner for cello, guitar and bass, with every common standard, drop, open and lowered tuning. Free and open source." />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
+    <style id="expo-reset">
+      html,
+      body {
+        height: 100%;
+        /* The app's ground, before the bundle paints it: no white flash in dark mode. */
+        background-color: #f2f2f7;
+      }
+      @media (prefers-color-scheme: dark) {
+        html,
+        body {
+          background-color: #0b0a14;
+        }
+      }
+      body {
+        overflow: hidden;
+      }
+      #root {
+        display: flex;
+        height: 100%;
+        flex: 1;
+      }
+    </style>
+  </head>
+
+  <body>
+    <noscript>Pontifork needs JavaScript to listen to your instrument.</noscript>
+    <div id="root"></div>
+  </body>
+</html>

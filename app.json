@@ -1,0 +1,59 @@
+{
+  "expo": {
+    "name": "Pontifork",
+    "slug": "pontifork",
+    "version": "1.0.0",
+    "orientation": "default",
+    "icon": "./assets/images/icon.png",
+    "scheme": "pontifork",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "icon": "./assets/expo.icon",
+      "bundleIdentifier": "com.bermeo.pontifork",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.bermeo.pontifork",
+      "adaptiveIcon": {
+        "backgroundColor": "#2A1C9E",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundImage": "./assets/images/android-icon-background.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ]
+    },
+    "web": {
+      "output": "single",
+      "bundler": "metro",
+      "lang": "en"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0B0A14",
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 148
+        }
+      ],
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Pontifork listens to your instrument to show whether each string is in tune. Nothing is recorded and nothing leaves the device."
+        }
+      ],
+      "expo-asset"
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "description": "An offline tuner for cello, guitar and bass, with every common standard, drop, open and lowered tuning.",
+    "backgroundColor": "#F2F2F7"
+  }
+}
