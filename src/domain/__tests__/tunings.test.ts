@@ -23,7 +23,8 @@ describe('tuning catalogue shape', () => {
     expect(new Set(tunings.map((t) => t.id)).size).toBe(tunings.length);
     for (const t of tunings) {
       expect(t.notes, t.id).toHaveLength(strings);
-      t.notes.slice(1).forEach((note, i) => expect(note, t.id).toBeGreaterThan(itemAt(t.notes, i)));
+      // Neighbours may share a note (QOTSA's unison pairs), never go down.
+      t.notes.slice(1).forEach((note, i) => expect(note, t.id).toBeGreaterThanOrEqual(itemAt(t.notes, i)));
     }
   });
 
@@ -83,6 +84,34 @@ describe('tunings keep the promises in their names', () => {
   it.each(OPEN_CHORDS)('%s rings its chord', (id, root, third) => {
     const pitchClasses = new Set(byId('guitar', 6, id).notes.map(toPitchClass));
     expect(pitchClasses).toEqual(new Set([root, (root + third) % 12, (root + 7) % 12]));
+  });
+
+  describe('QOTSA', () => {
+    const qotsa = (instrument: InstrumentId, strings: number) => byId(instrument, strings, 'qotsa').notes;
+    const G = 7;
+    const D = 2;
+
+    it.each(SETUPS.filter((s) => s.instrument !== 'cello'))('rings a G power chord on a $strings-string $instrument', ({ instrument, strings }) => {
+      expect(new Set(qotsa(instrument, strings).map(toPitchClass))).toEqual(new Set([G, D]));
+    });
+
+    it('pairs the six-string\'s outer strings in unison: G G D G D D', () => {
+      expect(qotsa('guitar', 6)).toEqual([43, 43, 50, 55, 62, 62]);
+      expect(byId('guitar', 6, 'qotsa').name).toContain('GGDGDD');
+    });
+
+    it('puts a seven-string\'s low G an octave under the pair', () => {
+      expect(qotsa('guitar', 7)).toEqual([31, ...qotsa('guitar', 6)]);
+    });
+
+    it('drops a bass an octave below the guitar\'s four lowest strings, as standard does', () => {
+      expect(qotsa('bass', 4)).toEqual(shifted(qotsa('guitar', 6).slice(0, 4), -12));
+    });
+
+    it('adds a low D to the five-string and a high D to the six-string bass', () => {
+      expect(qotsa('bass', 5)).toEqual([26, ...qotsa('bass', 4)]);
+      expect(qotsa('bass', 6)).toEqual([...qotsa('bass', 5), 50]);
+    });
   });
 });
 

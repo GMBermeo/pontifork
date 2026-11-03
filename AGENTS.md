@@ -96,6 +96,14 @@ standard with its low string down a tone, every open tuning rings its chord).
 A tuning `id` is stored in settings: never rename one. To add a tuning, add a
 line to the right setup and run the tests.
 
+Neighbouring strings may share a note: the QOTSA tuning (`qotsa`, G G D G D D
+on six strings, with derivatives for seven strings and every bass) pairs its
+outer strings in unison. A tuner following whichever string is played cannot
+tell a pair apart, so `candidateStrings` (`domain/targets.ts`) names both:
+the dial reads "String 6 or 5", both pegs light, and a pair string coming
+into tune ticks the first of the two not yet ticked (`applyStatusChange`).
+Locking a string makes it unambiguous again.
+
 ## The chord book
 
 The Chords tab (`src/app/(tabs)/chords.tsx`, built from `src/components/chords/`)
@@ -108,8 +116,12 @@ settings: there is no second tuning.
   bass tenor): the standard shapes, renamed by the shift, so B's page in half
   step down shows the C shape and labels it. Drop tunings: the same shapes with
   the lowest string fretted two higher (or left out), plus the one-finger
-  power chord. Anything else (open tunings, DADGAD, double drop D, the cello's
-  scordaturas): shapes found by search for that tuning.
+  power chord. Anything else (open tunings, DADGAD, double drop D, QOTSA, the
+  cello's scordaturas): shapes found by search for that tuning. Unison strings
+  leave some chords out of one hand's reach (no augmented chord without G or D
+  in QOTSA; 22 of the 120 chords on its four-string bass); `chords.test.ts`
+  proves each missing shape unreachable, and the book shows every place the
+  notes fall instead.
 - **Guitar shapes are written out by hand** (`guitarShapes.ts`): the open
   chords and the E and A shape barres, with a teacher's fingering. A seven-
   string adds the E shape on strings 7–4. Bass and cello shapes come from

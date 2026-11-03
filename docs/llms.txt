@@ -2,7 +2,7 @@
 
 > A free, open-source tuner and chord book for cello, guitar (6 and 7 strings) and bass (4, 5 and 6 strings). It runs in any browser and as an Android app. It listens on the device: nothing is recorded and nothing is sent anywhere.
 
-- Tunes 53 standard, lowered, drop, open, alternate and scordatura tunings, and knows which string is being tuned, so a string far off pitch is still measured against its own target.
+- Tunes 58 standard, lowered, drop, open, alternate and scordatura tunings, and knows which string is being tuned, so a string far off pitch is still measured against its own target.
 - Counts within 5 cents as in tune; the reference pitch moves from A = 415 to 466 Hz.
 - The chord book lists 120 chords (12 roots of major, minor, 7, m7, maj7, sus2, sus4, 5, dim and aug) whose shapes follow the tuning and capo in use: a C shape played half a step down is listed as B.
 - Chord sequences are saved on the device and can be played through silently, two seconds per chord.

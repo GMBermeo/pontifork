@@ -13,6 +13,27 @@ describe('applyStatusChange', () => {
     expect(applyStatusChange(tuned, { stringIndex: 1, tuned: true })).toBe(tuned);
     expect(applyStatusChange(tuned, { stringIndex: 3, tuned: false })).toBe(tuned);
   });
+
+  describe('on strings in unison', () => {
+    // QOTSA's low pair: strings 0 and 1 are both G, and a reading names the first.
+    const pair = [0, 1];
+
+    it('ticks one pair string, then the other, as each comes into tune', () => {
+      const first = applyStatusChange(new Set(), { stringIndex: 0, tuned: true }, pair);
+      expect(first).toEqual(new Set([0]));
+      expect(applyStatusChange(first, { stringIndex: 0, tuned: true }, pair)).toEqual(new Set([0, 1]));
+    });
+
+    it('unticks neither when one is heard off: there is no telling which', () => {
+      const tuned = new Set([0, 1]);
+      expect(applyStatusChange(tuned, { stringIndex: 0, tuned: false }, pair)).toBe(tuned);
+    });
+
+    it('changes nothing once the whole pair is ticked', () => {
+      const tuned = new Set([0, 1, 4]);
+      expect(applyStatusChange(tuned, { stringIndex: 0, tuned: true }, pair)).toBe(tuned);
+    });
+  });
 });
 
 const inTune: TuneSample = { stringIndex: 2, cents: 3, voiced: true };

@@ -88,6 +88,7 @@ const GUITAR_6: NonEmpty<Tuning> = [
   tuning({ id: 'open-a', name: 'Open A', family: 'open', notes: 'E2 A2 E3 A3 C#4 E4', description: 'Open G a whole tone up.' }),
   tuning({ id: 'open-c', name: 'Open C', family: 'open', notes: 'C2 G2 C3 G3 C4 E4', description: 'A wide C major chord from low C to high E.' }),
   tuning({ id: 'dadgad', name: 'DADGAD', family: 'alternate', notes: 'D2 A2 D3 G3 A3 D4', description: 'A suspended, modal tuning from Celtic and acoustic guitar.' }),
+  tuning({ id: 'qotsa', name: 'QOTSA (GGDGDD)', family: 'alternate', notes: 'G2 G2 D3 G3 D4 D4', description: 'After Queens of the Stone Age: a G power chord with the two outer pairs in unison, for a doubled, chorused ring.' }),
 ];
 
 const GUITAR_7: NonEmpty<Tuning> = [
@@ -98,6 +99,7 @@ const GUITAR_7: NonEmpty<Tuning> = [
   tuning({ id: 'drop-g-sharp', name: 'Drop G♯ / A♭', family: 'drop', notes: 'Ab1 Eb2 Ab2 Db3 Gb3 Bb3 Eb4', spelling: 'flats', description: 'Drop A, half step down.' }),
   tuning({ id: 'drop-g', name: 'Drop G', family: 'drop', notes: 'G1 D2 G2 C3 F3 A3 D4', description: 'Drop A, whole step down.' }),
   tuning({ id: 'drop-f-sharp', name: 'Drop F♯', family: 'drop', notes: 'F#1 C#2 F#2 B2 E3 G#3 C#4', description: 'Drop A, one and a half steps down.' }),
+  tuning({ id: 'qotsa', name: 'QOTSA (GGGDGDD)', family: 'alternate', notes: 'G1 G2 G2 D3 G3 D4 D4', description: 'The six-string QOTSA tuning over a low G an octave down.' }),
 ];
 
 // ─── Bass ────────────────────────────────────────────────────────────────────
@@ -116,6 +118,7 @@ const BASS_4: NonEmpty<Tuning> = [
   tuning({ id: 'drop-a-sharp', name: 'Drop A♯ / B♭', family: 'drop', notes: 'Bb0 F1 Bb1 Eb2', spelling: 'flats', description: 'Drop D, two whole steps down.' }),
   tuning({ id: 'drop-a', name: 'Drop A', family: 'drop', notes: 'A0 E1 A1 D2', description: 'Drop D, two and a half steps down.' }),
   tuning({ id: 'tenor', name: 'Tenor (ADGC)', family: 'alternate', notes: 'A1 D2 G2 C3', description: 'Every string a fourth up, for chords and solos.' }),
+  tuning({ id: 'qotsa', name: 'QOTSA (GGDG)', family: 'alternate', notes: 'G1 G1 D2 G2', description: 'The guitar\'s QOTSA tuning an octave down: its four lowest strings, the low pair in unison.' }),
 ];
 
 const BASS_5: NonEmpty<Tuning> = [
@@ -124,6 +127,7 @@ const BASS_5: NonEmpty<Tuning> = [
   tuning({ id: 'whole-step-down', name: 'Whole step down', family: 'standard', notes: 'A0 D1 G1 C2 F2', description: 'Every string a whole tone low.' }),
   tuning({ id: 'drop-a', name: 'Drop A', family: 'drop', notes: 'A0 E1 A1 D2 G2', description: 'The low B down a whole tone.' }),
   tuning({ id: 'high-c', name: 'High C (EADGC)', family: 'alternate', notes: 'E1 A1 D2 G2 C3', description: 'Four-string standard with a high C in place of the low B.' }),
+  tuning({ id: 'qotsa', name: 'QOTSA (DGGDG)', family: 'alternate', notes: 'D1 G1 G1 D2 G2', description: 'The four-string QOTSA tuning over a low D.' }),
 ];
 
 const BASS_6: NonEmpty<Tuning> = [
@@ -131,6 +135,7 @@ const BASS_6: NonEmpty<Tuning> = [
   tuning({ id: 'half-step-down', name: 'Half step down', family: 'standard', notes: 'Bb0 Eb1 Ab1 Db2 Gb2 B2', spelling: 'flats', description: 'Every string a semitone low.' }),
   tuning({ id: 'whole-step-down', name: 'Whole step down', family: 'standard', notes: 'A0 D1 G1 C2 F2 Bb2', spelling: 'flats', description: 'Every string a whole tone low.' }),
   tuning({ id: 'drop-a', name: 'Drop A', family: 'drop', notes: 'A0 E1 A1 D2 G2 C3', description: 'The low B down a whole tone.' }),
+  tuning({ id: 'qotsa', name: 'QOTSA (DGGDGD)', family: 'alternate', notes: 'D1 G1 G1 D2 G2 D3', description: 'The five-string QOTSA tuning under a high D.' }),
 ];
 
 // ─── Lookup ──────────────────────────────────────────────────────────────────

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { centsBetween, midiToFrequency } from '../pitch';
-import { STRING_CAPTURE_CENTS, nearestString, resolveTarget, type TargetContext } from '../targets';
+import { STRING_CAPTURE_CENTS, candidateStrings, nearestString, resolveTarget, type TargetContext } from '../targets';
 
 const GUITAR = [40, 45, 50, 55, 59, 64];
 const DROP_C = [36, 43, 48, 53, 57, 62];
@@ -58,5 +58,27 @@ describe('nearestString hysteresis', () => {
   it('captures nothing beyond the capture range', () => {
     expect(nearestString(above(64, STRING_CAPTURE_CENTS + 10), context())).toBeNull();
     expect(nearestString(above(64, STRING_CAPTURE_CENTS - 10), context())).toBe(5);
+  });
+});
+
+describe('candidateStrings', () => {
+  const QOTSA = [43, 43, 50, 55, 62, 62];
+
+  it('is the string itself when no other shares its note', () => {
+    expect(candidateStrings(GUITAR, 2, null)).toEqual([2]);
+    expect(candidateStrings(QOTSA, 3, null)).toEqual([3]);
+  });
+
+  it('is the whole unison pair while following any string', () => {
+    expect(candidateStrings(QOTSA, 0, null)).toEqual([0, 1]);
+    expect(candidateStrings(QOTSA, 5, null)).toEqual([4, 5]);
+  });
+
+  it('is only the locked string while one is locked', () => {
+    expect(candidateStrings(QOTSA, 1, 1)).toEqual([1]);
+  });
+
+  it('is nothing for a string the tuning does not have', () => {
+    expect(candidateStrings(QOTSA, 6, null)).toEqual([]);
   });
 });

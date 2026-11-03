@@ -35,7 +35,7 @@ export function LiveTuner({ listening, onEnableMic }: Readonly<{
     minFrequency: detectionFloorHz(instrument),
   });
   const reading = useTunerReading(pitch);
-  const tunedStrings = useTunedStrings(pitch, tuning);
+  const tunedStrings = useTunedStrings(pitch, tuning, lockedString);
   const session: TuningSession = { instrument, tuning, lockedString, lockString, tunedStrings };
 
   const compact = theme.scale.compact;

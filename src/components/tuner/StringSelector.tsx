@@ -1,6 +1,6 @@
 import { Pressable, View } from 'react-native';
 
-import { noteLetter, noteName, octaveOf, stringNumeral } from '@domain';
+import { candidateStrings, noteLetter, noteName, octaveOf, stringNumeral } from '@domain';
 import { RADIUS, useTheme, type Chrome } from '@theme';
 
 import { Body, Button, Grow, Icon, Label, Num, Row, Stack, Title, useControlFeedback } from '../ui';
@@ -54,13 +54,14 @@ function Peg({ index, midi, state, session }: Readonly<{ index: number; midi: nu
 
 /**
  * The tuning's strings, lowest on the left. The string being heard is
- * outlined, a string held in tune gets a tick, and tapping one locks the
- * tuner to it — for bringing a string a long way, where the nearest-string
- * guess would pick its neighbour.
+ * outlined (both of a unison pair, which sound alike), a string held in tune
+ * gets a tick, and tapping one locks the tuner to it — for bringing a string
+ * a long way, where the nearest-string guess would pick its neighbour.
  */
 export function StringSelector({ session, activeString }: Readonly<{ session: TuningSession; activeString: number | null }>) {
   const theme = useTheme();
   const { lockedString, tuning, instrument } = session;
+  const heard = activeString === null ? [] : candidateStrings(tuning.notes, activeString, lockedString);
   const hint = lockedString === null
     ? 'Following whichever string you play. Tap a string to lock onto it.'
     : `Locked to string ${stringNumeral(instrument, lockedString, tuning.notes.length)}. Tap it again to follow any string.`;
@@ -77,7 +78,7 @@ export function StringSelector({ session, activeString }: Readonly<{ session: Tu
       <View style={{ flexDirection: 'row', gap: theme.s(6) }}>
         {tuning.notes.map((midi, index) => (
           <Peg key={index} index={index} midi={midi} session={session} state={{
-            active: activeString === index,
+            active: heard.includes(index),
             locked: lockedString === index,
             tuned: session.tunedStrings.has(index),
           }} />

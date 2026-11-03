@@ -1,14 +1,16 @@
 import { describe, expect, it } from 'vitest';
 
 import { bookPage, openNotes, shapesFor, tuningRelation, type BookShape, type ChordSetup } from '../chords/book';
-import { CHORD_TYPE_ORDER, type ChordRef, type ChordTypeId } from '../chords/chordTypes';
+import { CHORD_TYPE_ORDER, chordPitchClasses, requiredPitchClasses, type ChordRef, type ChordTypeId } from '../chords/chordTypes';
 import { chordDiagram, type DiagramOptions } from '../chords/diagram';
 import { guitarShapes, sevenStringShapes } from '../chords/guitarShapes';
 import { chordInKey, keyChords, keyName } from '../chords/keys';
+import { MAX_SEARCH_FRET } from '../chords/search';
 import { bassPitchClass, fingerShape, HAND_SPAN, soundsChord, stoppedRange } from '../chords/shapes';
 import { chordRootSpelling, chordSymbol, chordToneSpellings, spellingName } from '../chords/spelling';
 import { INSTRUMENT_ORDER, INSTRUMENTS, type InstrumentId } from '../instruments';
 import { itemAt } from '../lists';
+import { toPitchClass, type PitchClass } from '../pitch';
 import { findTuning, tuningsFor, type Tuning } from '../tunings';
 
 const ROOTS = Array.from({ length: 12 }, (_, root) => root);
@@ -42,6 +44,31 @@ function* everyBookShape() {
 }
 
 const frets = (pattern: string) => pattern.split('-').map((fret) => (fret === 'x' ? null : Number(fret)));
+
+/** True when some choice of one note per string covers `required`, each string offering `options`. */
+function covers(options: readonly (readonly PitchClass[])[], required: readonly PitchClass[], have: ReadonlySet<PitchClass> = new Set()): boolean {
+  if (required.every((pc) => have.has(pc))) return true;
+  const [first, ...rest] = options;
+  if (first === undefined) return false;
+  return covers(rest, required, have) || first.some((pc) => covers(rest, required, new Set([...have, pc])));
+}
+
+/**
+ * Whether any hand could sound the chord in this tuning, under none of the
+ * search's preferences (string count, unbroken runs, fingering): some window
+ * of HAND_SPAN frets, open strings included, in which one chord tone per
+ * string adds up to every tone the chord needs.
+ */
+function reachable(open: readonly number[], chord: ChordRef): boolean {
+  const tones = new Set(chordPitchClasses(chord.root, chord.type));
+  const required = requiredPitchClasses(chord.root, chord.type);
+  for (let base = 1; base <= MAX_SEARCH_FRET; base++) {
+    const window = [0, ...Array.from({ length: Math.min(HAND_SPAN, MAX_SEARCH_FRET - base) + 1 }, (_, i) => base + i)];
+    const options = open.map((note) => [...new Set(window.map((fret) => toPitchClass(note + fret)))].filter((pc) => tones.has(pc)));
+    if (covers(options, required)) return true;
+  }
+  return false;
+}
 const tones = (root: number, type: ChordTypeId) => chordToneSpellings(chordRootSpelling(root, type, 'sharps'), type, 'sharps').map(spellingName);
 
 describe('the shapes guitarists learn', () => {
@@ -121,11 +148,27 @@ describe('the book follows the tuning', () => {
     }
   });
 
-  it('has a shape for every chord on guitar and bass, in every tuning', () => {
-    for (const { instrument, strings, tuning } of everySetup().filter((s) => s.instrument !== 'cello')) {
+  it('has a shape for every chord on guitar and bass in every tuning whose strings are all different notes', () => {
+    const distinct = everySetup().filter((s) => s.instrument !== 'cello' && new Set(s.tuning.notes).size === s.strings);
+    for (const { instrument, strings, tuning } of distinct) {
       for (const type of CHORD_TYPE_ORDER) {
         for (const root of ROOTS) {
           expect(shapesFor({ instrument, strings, tuning, capo: 0 }, { root, type }).length, `${instrument}-${strings} ${tuning.id} ${root}${type}`).toBeGreaterThan(0);
+        }
+      }
+    }
+  });
+
+  it('leaves a chord without a shape only when no hand can reach its notes', () => {
+    // Strings in unison sound one note between them, so QOTSA's few distinct
+    // strings cannot hold every chord: C augmented has no G or D, and every G
+    // string fingers the same note in any one window, every D string another.
+    for (const { instrument, strings, tuning } of everySetup()) {
+      const chords: ChordSetup = { instrument, strings, tuning, capo: 0 };
+      for (const type of CHORD_TYPE_ORDER) {
+        for (const root of ROOTS) {
+          if (shapesFor(chords, { root, type }).length > 0) continue;
+          expect(reachable(openNotes(chords), { root, type }), `${instrument}-${strings} ${tuning.id} ${root}${type}`).toBe(false);
         }
       }
     }
@@ -186,6 +229,11 @@ describe('the book follows the tuning', () => {
 
   it('finds open G\'s own shapes: all six strings open is G', () => {
     expect(firstShape(setup('guitar', 6, 'open-g'), { root: 7, type: 'maj' }).frets).toEqual(frets('0-0-0-0-0-0'));
+  });
+
+  it('rings G5 on QOTSA\'s open strings, and moves it up the neck with one finger', () => {
+    expect(firstShape(setup('guitar', 6, 'qotsa'), { root: 7, type: '5' }).frets).toEqual(frets('0-0-0-0-0-0'));
+    expect(firstShape(setup('guitar', 6, 'qotsa'), { root: 9, type: '5' }).frets).toEqual(frets('2-2-2-2-2-2'));
   });
 
   it('ignores a capo on the cello', () => {

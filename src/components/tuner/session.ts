@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { AppState, Platform } from 'react-native';
 
 import type { LivePitch } from '@audio';
-import { applyStatusChange, StringStatusTracker, type InstrumentId, type Tuning } from '@domain';
+import { applyStatusChange, candidateStrings, StringStatusTracker, type InstrumentId, type Tuning } from '@domain';
 
 /** Everything the tuner's pieces need to know about what is being tuned. */
 export interface TuningSession {
@@ -41,8 +41,10 @@ function confirmWithHaptics(): void {
  * Which strings have been held in tune since `tuning` was chosen, with a
  * haptic tap as each one lands. Follows the throttled readings rather than
  * the audio frames: ten updates a second is plenty to judge a 600 ms hold.
+ * Unless a string is locked, a reading on a string in unison could be any of
+ * the pair (`applyStatusChange`).
  */
-export function useTunedStrings(pitch: LivePitch, tuning: Tuning): ReadonlySet<number> {
+export function useTunedStrings(pitch: LivePitch, tuning: Tuning, lockedString: number | null): ReadonlySet<number> {
   const [progress, setProgress] = useState<{ tuning: Tuning; tuned: ReadonlySet<number> }>({ tuning, tuned: NO_STRINGS });
 
   useEffect(() => {
@@ -52,11 +54,11 @@ export function useTunedStrings(pitch: LivePitch, tuning: Tuning): ReadonlySet<n
       if (!change) return;
       setProgress((current) => {
         const tuned = current.tuning === tuning ? current.tuned : NO_STRINGS;
-        return { tuning, tuned: applyStatusChange(tuned, change) };
+        return { tuning, tuned: applyStatusChange(tuned, change, candidateStrings(tuning.notes, change.stringIndex, lockedString)) };
       });
       if (change.tuned) confirmWithHaptics();
     });
-  }, [pitch, tuning]);
+  }, [pitch, tuning, lockedString]);
 
   return progress.tuning === tuning ? progress.tuned : NO_STRINGS;
 }

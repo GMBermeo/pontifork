@@ -53,8 +53,10 @@ and capo in use.
 - **Shapes follow the tuning.** The book lists chords by how they sound. A
   half step down, B's page shows the C shape you know, and says so; a whole
   step down it is B♭; with a capo on 2, D. Drop tunings keep the shapes and
-  fret the low string two higher; open tunings, DADGAD and the cello's
-  scordaturas get their own shapes, found by search.
+  fret the low string two higher; open tunings, DADGAD, QOTSA and the
+  cello's scordaturas get their own shapes, found by search. A chord one hand
+  cannot reach in the tuning (C augmented has no G or D for QOTSA's strings
+  to give it) shows every place its notes fall instead.
 - **The shapes players learn.** On guitar, each chord's open shape and the E
   and A shape barres; on seven strings, the E shape on the low string too.
   Bass and cello chords are found within one hand's reach.
@@ -72,11 +74,11 @@ and capo in use.
 | Setup | Tunings |
 |---|---|
 | Cello | Standard (C G D A), half step down, Bach Suite No. 5 (A→G), Kodály Sonata Op. 8 (B F♯ D A) |
-| Guitar, 6 strings | Standard, half step down (E♭), whole step down (D), C♯, C and B standard · Drop D, C♯, C, B, A♯/B♭, A · Double drop D · Open D, D minor, E, G, A, C · DADGAD |
-| Guitar, 7 strings | Standard (B E A D G B E), half step down, whole step down · Drop A, G♯/A♭, G, F♯ |
-| Bass, 4 strings | Standard, half step down, whole step down, C♯, C and B (BEAD) standard · Drop D, C♯, C, B, A♯/B♭, A · Tenor (ADGC) |
-| Bass, 5 strings | Standard (B E A D G), half step down, whole step down · Drop A · High C (EADGC) |
-| Bass, 6 strings | Standard (B E A D G C), half step down, whole step down · Drop A |
+| Guitar, 6 strings | Standard, half step down (E♭), whole step down (D), C♯, C and B standard · Drop D, C♯, C, B, A♯/B♭, A · Double drop D · Open D, D minor, E, G, A, C · DADGAD, QOTSA (G G D G D D) |
+| Guitar, 7 strings | Standard (B E A D G B E), half step down, whole step down · Drop A, G♯/A♭, G, F♯ · QOTSA (G G G D G D D) |
+| Bass, 4 strings | Standard, half step down, whole step down, C♯, C and B (BEAD) standard · Drop D, C♯, C, B, A♯/B♭, A · Tenor (ADGC), QOTSA (G G D G) |
+| Bass, 5 strings | Standard (B E A D G), half step down, whole step down · Drop A · High C (EADGC), QOTSA (D G G D G) |
+| Bass, 6 strings | Standard (B E A D G C), half step down, whole step down · Drop A · QOTSA (D G G D G D) |
 
 Every note of every tuning is on the [product site](https://pontifork.bermeo.dev/#tunings).
 

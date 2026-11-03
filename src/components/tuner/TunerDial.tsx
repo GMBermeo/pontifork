@@ -3,7 +3,7 @@ import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 
 import type { LivePitch, MicSource, TunerReading } from '@audio';
 import {
-  formatCents, IN_TUNE_CENTS, INSTRUMENTS, judgeTuning, noteLetter, noteName, octaveOf, stringNumeral,
+  candidateStrings, formatCents, IN_TUNE_CENTS, INSTRUMENTS, judgeTuning, noteLetter, noteName, octaveOf, stringNumeral,
   tuneDirection,
 } from '@domain';
 import { useTheme, verdictColor } from '@theme';
@@ -30,13 +30,19 @@ function idleLine(mic: MicSource, session: TuningSession): string {
   return 'Microphone unavailable';
 }
 
+/** The string a reading is aimed at, or both of a unison pair while following any string: `String 6 or 5`. */
+function stringLabel(stringIndex: number | null, session: TuningSession): string {
+  if (stringIndex === null) return 'Chromatic';
+  const { tuning, instrument, lockedString } = session;
+  const strings = candidateStrings(tuning.notes, stringIndex, lockedString);
+  return `String ${strings.map((string) => stringNumeral(instrument, string, tuning.notes.length)).join(' or ')}`;
+}
+
 /** Which string, what is actually sounding when that is a different note, and the frequency. */
 function statusLine(reading: TunerReading, mic: MicSource, session: TuningSession): string {
   if (!reading.voiced) return idleLine(mic, session);
-  const { tuning, instrument } = session;
-  const parts = [reading.stringIndex === null
-    ? 'Chromatic'
-    : `String ${stringNumeral(instrument, reading.stringIndex, tuning.notes.length)}`];
+  const { tuning } = session;
+  const parts = [stringLabel(reading.stringIndex, session)];
   if (reading.heardMidi !== null && reading.heardMidi !== reading.targetMidi) {
     parts.push(`hearing ${noteName(reading.heardMidi, tuning.spelling)}`);
   }

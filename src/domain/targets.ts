@@ -69,6 +69,19 @@ export function nearestString(frequency: number, context: TargetContext): number
   return best;
 }
 
+/**
+ * Every string a reading aimed at string `index` may come from. Strings in
+ * unison (QOTSA's pairs) sound the same pitch, so while the tuner follows
+ * whichever string is played it cannot tell them apart; a locked string is
+ * only itself. Lowest first.
+ */
+export function candidateStrings(notes: readonly number[], index: number, locked: number | null): number[] {
+  const note = notes[index];
+  if (note === undefined) return [];
+  if (locked !== null) return [index];
+  return [...notes.keys()].filter((string) => notes[string] === note);
+}
+
 /** The note the display should measure `frequency` against. */
 export function resolveTarget(frequency: number, context: TargetContext): TunerTarget {
   return stringTarget(context, context.locked)

@@ -73,10 +73,22 @@ export class StringStatusTracker {
 }
 
 /** The tuned strings after `change`: the same set when nothing changes, so React can skip a render. */
-export function applyStatusChange(tuned: ReadonlySet<number>, change: StringStatusChange): ReadonlySet<number> {
+export function applyStatusChange(tuned: ReadonlySet<number>, change: StringStatusChange, among: readonly number[] = [change.stringIndex]): ReadonlySet<number> {
+  if (among.length > 1) return applyUnisonChange(tuned, change, among);
   if (tuned.has(change.stringIndex) === change.tuned) return tuned;
   const next = new Set(tuned);
   if (change.tuned) next.add(change.stringIndex);
   else next.delete(change.stringIndex);
   return next;
+}
+
+/**
+ * A change that could belong to any of `among`, strings in unison: coming
+ * into tune ticks the first of them not yet ticked, so tuning one pair string
+ * after the other ticks both; heard off, it unticks nothing, since there is
+ * no telling which of them drifted.
+ */
+function applyUnisonChange(tuned: ReadonlySet<number>, change: StringStatusChange, among: readonly number[]): ReadonlySet<number> {
+  const untuned = change.tuned ? among.find((string) => !tuned.has(string)) : undefined;
+  return untuned === undefined ? tuned : new Set([...tuned, untuned]);
 }
