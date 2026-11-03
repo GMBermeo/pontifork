@@ -7,9 +7,36 @@
  */
 
 import {
-  A4_MAX_HZ, A4_MIN_HZ, DEFAULT_A4_HZ, INSTRUMENT_ORDER, isInstrumentId, setupKey, tuningsFor, validStringCount,
-  type InstrumentId, type SetupKey,
+  A4_MAX_HZ, A4_MIN_HZ, clampCapo, DEFAULT_A4_HZ, INSTRUMENT_ORDER, isChordTypeId, isInstrumentId, keyId, parseKeyId,
+  setupKey, tuningsFor, validStringCount,
+  type BookTab, type DotLabels, type InstrumentId, type KeyId, type SetupKey,
 } from '@domain';
+
+import { isObject, type Stored } from './stored';
+
+/** How the chord book is set up: which page is open and how diagrams are drawn. */
+export interface BookSettings {
+  tab: BookTab;
+  /** The key filter, or null for every chord. */
+  key: KeyId | null;
+  labels: DotLabels;
+  allPositions: boolean;
+  leftHanded: boolean;
+  /** Guitar and bass only; the cello ignores it. */
+  capo: number;
+  /** Play a chord when it is tapped. */
+  sound: boolean;
+}
+
+export const DEFAULT_BOOK: BookSettings = {
+  tab: 'maj',
+  key: null,
+  labels: 'fingers',
+  allPositions: false,
+  leftHanded: false,
+  capo: 0,
+  sound: true,
+};
 
 export interface Settings {
   instrument: InstrumentId;
@@ -19,6 +46,7 @@ export interface Settings {
   tunings: Partial<Record<SetupKey, string>>;
   /** Reference pitch in Hz. */
   a4: number;
+  book: BookSettings;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -26,6 +54,7 @@ export const DEFAULT_SETTINGS: Settings = {
   strings: { cello: 4, guitar: 6, bass: 4 },
   tunings: {},
   a4: DEFAULT_A4_HZ,
+  book: DEFAULT_BOOK,
 };
 
 /** A reference pitch on the calibration's whole-hertz grid. */
@@ -34,12 +63,8 @@ export function clampA4(hz: unknown): number {
   return Math.min(A4_MAX_HZ, Math.max(A4_MIN_HZ, Math.round(hz)));
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null;
-}
-
 function sanitizeTunings(raw: unknown, strings: Record<InstrumentId, number>): Partial<Record<SetupKey, string>> {
-  if (!isRecord(raw)) return {};
+  if (!isObject(raw)) return {};
   const tunings: Partial<Record<SetupKey, string>> = {};
   for (const instrument of INSTRUMENT_ORDER) {
     const key = setupKey(instrument, strings[instrument]);
@@ -49,10 +74,30 @@ function sanitizeTunings(raw: unknown, strings: Record<InstrumentId, number>): P
   return tunings;
 }
 
+/** The chord book's settings from a stored copy: the key tab only exists while a key is chosen. */
+export function sanitizeBook(value: unknown): BookSettings {
+  if (!isObject(value)) return DEFAULT_BOOK;
+  const raw: Stored<BookSettings> = value;
+  const key = parseKeyId(raw.key);
+  let tab: BookTab = DEFAULT_BOOK.tab;
+  if (isChordTypeId(raw.tab)) tab = raw.tab;
+  else if (raw.tab === 'key' && key) tab = 'key';
+  return {
+    tab,
+    key: key ? keyId(key) : null,
+    labels: raw.labels === 'notes' ? 'notes' : 'fingers',
+    allPositions: raw.allPositions === true,
+    leftHanded: raw.leftHanded === true,
+    capo: clampCapo(raw.capo),
+    sound: raw.sound !== false,
+  };
+}
+
 /** Settings from a stored copy, with anything unknown or out of range replaced by its default. */
-export function sanitizeSettings(raw: unknown): Settings {
-  if (!isRecord(raw)) return DEFAULT_SETTINGS;
-  const storedStrings = isRecord(raw.strings) ? raw.strings : {};
+export function sanitizeSettings(value: unknown): Settings {
+  if (!isObject(value)) return DEFAULT_SETTINGS;
+  const raw: Stored<Settings> = value;
+  const storedStrings = isObject(raw.strings) ? raw.strings : {};
   const strings = Object.fromEntries(
     INSTRUMENT_ORDER.map((instrument) => [instrument, validStringCount(instrument, storedStrings[instrument])]),
   ) as Record<InstrumentId, number>;
@@ -61,5 +106,6 @@ export function sanitizeSettings(raw: unknown): Settings {
     strings,
     tunings: sanitizeTunings(raw.tunings, strings),
     a4: clampA4(raw.a4),
+    book: sanitizeBook(raw.book),
   };
 }

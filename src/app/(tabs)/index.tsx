@@ -2,8 +2,8 @@ import { useIsFocused } from 'expo-router';
 import { useState } from 'react';
 import { Platform } from 'react-native';
 
-import { Button, LiveTuner, Screen, ScreenHeader, useAppActive, useKeepAwakeWhile } from '@components';
-import { APP_NAME, APP_TAGLINE } from '@theme';
+import { Button, LiveTuner, PageMeta, Screen, ScreenHeader, useAppActive, useKeepAwakeWhile } from '@components';
+import { APP_NAME, APP_TAGLINE, SITE_URL } from '@theme';
 
 /**
  * The tuner.
@@ -25,10 +25,12 @@ export default function TunerScreen() {
 
   return (
     <Screen>
+      <PageMeta path="/" title="Pontifork — online tuner for cello, guitar and bass"
+        description="Tune a cello, guitar or bass in your browser, in any of 53 standard, drop and open tunings, against the string you play. Free; nothing leaves your device." />
       <ScreenHeader title={APP_NAME} subtitle={APP_TAGLINE}>
-        {/* The product site is deployed beside the web app (see vercel.json). */}
+        {/* The web app links to its product site, which has the guide. */}
         {Platform.OS === 'web'
-          ? <Button label="Guide" tone="ghost" accessibilityLabel="How to use Pontifork" onPress={() => window.location.assign('/docs/')} />
+          ? <Button label="Guide" tone="ghost" accessibilityLabel="How to use Pontifork" onPress={() => window.location.assign(SITE_URL)} />
           : null}
       </ScreenHeader>
       <LiveTuner listening={listening} onEnableMic={micAllowed ? null : () => setMicAllowed(true)} />

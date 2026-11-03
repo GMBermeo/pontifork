@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { SharedValue, useSharedValue } from 'react-native-reanimated';
+import { type SharedValue, useSharedValue } from 'react-native-reanimated';
 
-import { MicSource, TARGET_SAMPLE_RATE, useMicSource } from './sources';
+import { type MicSource, TARGET_SAMPLE_RATE, useMicSource } from './sources';
 import { SILENT_READING, TunerTracker, type TunerConfig, type TunerReading } from './tunerTracker';
 
 export interface LivePitch {

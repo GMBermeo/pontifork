@@ -3,13 +3,15 @@
  * strings.
  */
 
+import type { NonEmpty } from './lists';
+
 export type InstrumentId = 'cello' | 'guitar' | 'bass';
 
 export interface Instrument {
   id: InstrumentId;
   name: string;
   /** String counts on offer; the first is the default. */
-  stringCounts: readonly number[];
+  stringCounts: NonEmpty<number>;
   /** How a string is sounded, for the hint under the dial. */
   action: 'Bow' | 'Pluck';
   /**
@@ -50,5 +52,6 @@ const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'] as const;
  */
 export function stringNumeral(instrument: InstrumentId, index: number, count: number): string {
   const number = count - index;
-  return INSTRUMENTS[instrument].numerals === 'roman' ? ROMAN[number - 1] : String(number);
+  const roman = INSTRUMENTS[instrument].numerals === 'roman' ? ROMAN[number - 1] : undefined;
+  return roman ?? String(number);
 }

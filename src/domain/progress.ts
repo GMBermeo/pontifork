@@ -23,7 +23,7 @@ export interface StringStatusChange {
   tuned: boolean;
 }
 
-type Standing = { stringIndex: number; tuned: boolean };
+interface Standing { stringIndex: number; tuned: boolean }
 
 /** In tune, clearly out of tune, or neither — the band between is too close to call. */
 function standingOf(sample: TuneSample): Standing | null {
@@ -39,11 +39,14 @@ function sameStanding(a: Standing | null, b: Standing): boolean {
 }
 
 export class StringStatusTracker {
+  private readonly holdMs: number;
   private candidate: Standing | null = null;
   private since = 0;
   private reported = false;
 
-  constructor(private readonly holdMs = STATUS_HOLD_MS) {}
+  constructor(holdMs = STATUS_HOLD_MS) {
+    this.holdMs = holdMs;
+  }
 
   /** A change to report the moment a standing has been held for the hold time; otherwise null. */
   push(sample: TuneSample, nowMs: number): StringStatusChange | null {

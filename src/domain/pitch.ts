@@ -47,12 +47,19 @@ export function formatCents(cents: number): string {
 /** Whether accidentals are written as sharps or flats. A tuning picks one for all its strings. */
 export type Spelling = 'sharps' | 'flats';
 
-const SHARP_NAMES = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'] as const;
-const FLAT_NAMES = ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'G♭', 'G', 'A♭', 'A', 'B♭', 'B'] as const;
+const SHARP_NAMES: ByPitchClass<string> = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'];
+const FLAT_NAMES: ByPitchClass<string> = ['C', 'D♭', 'D', 'E♭', 'E', 'F', 'G♭', 'G', 'A♭', 'A', 'B♭', 'B'];
+
+/** A note's place in the octave: 0 = C … 11 = B. */
+export type PitchClass = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
+
+/** One value per pitch class, C first. Indexing it by a `PitchClass` is always defined. */
+export type ByPitchClass<T> = readonly [T, T, T, T, T, T, T, T, T, T, T, T];
 
 /** 0 = C … 11 = B, for any integer — negative intervals included. */
-export function toPitchClass(n: number): number {
-  return ((n % SEMITONES_PER_OCTAVE) + SEMITONES_PER_OCTAVE) % SEMITONES_PER_OCTAVE;
+export function toPitchClass(n: number): PitchClass {
+  // The double remainder lands an integer in 0…11, which is every PitchClass.
+  return (((n % SEMITONES_PER_OCTAVE) + SEMITONES_PER_OCTAVE) % SEMITONES_PER_OCTAVE) as PitchClass;
 }
 
 /** Scientific-pitch octave: middle C (MIDI 60) is C4. */
@@ -83,8 +90,11 @@ const NOTE_PATTERN = /^([A-G])([#♯b♭])?(-?\d)$/;
 export function parseNote(name: string): number {
   const match = NOTE_PATTERN.exec(name.trim());
   if (!match) throw new Error(`not a note in scientific pitch: "${name}"`);
-  const [, letter, accidental = '', octave] = match;
-  return (Number(octave) + 1) * SEMITONES_PER_OCTAVE + LETTER_PITCH_CLASS[letter] + ACCIDENTAL_SHIFT[accidental];
+  const [, letter = '', accidental = '', octave] = match;
+  const natural = LETTER_PITCH_CLASS[letter];
+  const shift = ACCIDENTAL_SHIFT[accidental];
+  if (natural === undefined || shift === undefined) throw new Error(`not a note in scientific pitch: "${name}"`);
+  return (Number(octave) + 1) * SEMITONES_PER_OCTAVE + natural + shift;
 }
 
 // ─── Tuning tolerance ────────────────────────────────────────────────────────

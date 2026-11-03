@@ -29,7 +29,7 @@ preview and the product site's copies.
 ## Why a real SVG renderer
 
 The master uses filters and arcs that Pillow cannot draw, so SVGs are
-rasterised by `tools/rasterize-svg.mjs` (resvg, a dev dependency) and only
+rasterised by `tools/rasterize-svg.mts` (resvg, a dev dependency) and only
 composed here with Pillow. What ships is what the editor showed. On a Mac with
 Icon Composer installed, its own renderer (`ictool`) also renders the glass
 icon, so the Liquid Glass result is looked at rather than assumed.
@@ -54,7 +54,7 @@ WEB_ICONS = os.path.join(WEB, "icons")
 DOCS_BRAND = os.path.join(ROOT, "docs", "assets", "brand")
 DOCS_SHOTS = os.path.join(ROOT, "docs", "assets", "screenshots")
 MASTER = os.path.join(LOGO, "pontifork-icon.svg")
-RASTERIZE = os.path.join(ROOT, "tools", "rasterize-svg.mjs")
+RASTERIZE = os.path.join(ROOT, "tools", "rasterize-svg.mts")
 ICTOOL = "/Applications/Icon Composer.app/Contents/Executables/ictool"
 
 SVG_NS = "http://www.w3.org/2000/svg"

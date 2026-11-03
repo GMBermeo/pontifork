@@ -2,7 +2,7 @@
   "expo": {
     "name": "Pontifork",
     "slug": "pontifork",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "pontifork",
@@ -10,10 +10,12 @@
     "ios": {
       "icon": "./assets/expo.icon",
       "bundleIdentifier": "com.bermeo.pontifork",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "buildNumber": "2"
     },
     "android": {
       "package": "com.bermeo.pontifork",
+      "versionCode": 2,
       "adaptiveIcon": {
         "backgroundColor": "#2A1C9E",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

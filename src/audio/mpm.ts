@@ -16,7 +16,7 @@
  * the same number that finds the pitch also tells us whether to trust it.
  */
 
-import { AcfScratch, autocorrelate, createAcfScratch } from './fft';
+import { autocorrelate, createAcfScratch, type AcfScratch } from './fft';
 
 export interface MpmOptions {
   sampleRate: number;
@@ -100,7 +100,7 @@ export class McLeodPitchDetector {
     const w = this.windowSize;
 
     let sumSquares = 0;
-    for (let i = 0; i < w; i++) sumSquares += frame[i] * frame[i];
+    for (let i = 0; i < w; i++) sumSquares += frame[i]! * frame[i]!;
     const rms = Math.sqrt(sumSquares / w);
     if (rms < this.silenceThreshold) return UNVOICED;
 
@@ -132,7 +132,7 @@ export class McLeodPitchDetector {
     const last = this.maxLag + 1;
     if (lag < 2 || lag > last) return 0;
     let best = 0;
-    for (let tau = lag - 1; tau <= Math.min(lag + 1, last); tau++) best = Math.max(best, this.nsdf[tau]);
+    for (let tau = lag - 1; tau <= Math.min(lag + 1, last); tau++) best = Math.max(best, this.nsdf[tau]!);
     return best;
   }
 
@@ -148,8 +148,8 @@ export class McLeodPitchDetector {
     let m = 2 * sumSquares;
     this.nsdf[0] = 1;
     for (let tau = 1; tau <= this.maxLag + 1; tau++) {
-      m -= frame[w - tau] * frame[w - tau] + frame[tau - 1] * frame[tau - 1];
-      this.nsdf[tau] = m > 0 ? (2 * this.acf[tau]) / m : 0;
+      m -= frame[w - tau]! * frame[w - tau]! + frame[tau - 1]! * frame[tau - 1]!;
+      this.nsdf[tau] = m > 0 ? (2 * this.acf[tau]!) / m : 0;
     }
   }
 
@@ -164,15 +164,15 @@ export class McLeodPitchDetector {
   private choosePeriod(count: number): number {
     let highest = 0;
     for (let i = 0; i < count; i++) {
-      const tau = this.maxima[i];
-      if (tau >= this.minLag && this.nsdf[tau] > highest) highest = this.nsdf[tau];
+      const tau = this.maxima[i]!;
+      if (tau >= this.minLag && this.nsdf[tau]! > highest) highest = this.nsdf[tau]!;
     }
     if (highest <= 0) return -1;
 
     const threshold = this.peakThreshold * highest;
     for (let i = 0; i < count; i++) {
-      const tau = this.maxima[i];
-      if (tau >= this.minLag && this.nsdf[tau] >= threshold) return tau;
+      const tau = this.maxima[i]!;
+      if (tau >= this.minLag && this.nsdf[tau]! >= threshold) return tau;
     }
     return -1;
   }
@@ -181,19 +181,19 @@ export class McLeodPitchDetector {
   private firstLagAfterPrimaryLobe(): number {
     const nsdf = this.nsdf;
     let pos = 1;
-    while (pos < this.maxLag && nsdf[pos] > 0) pos++;
+    while (pos < this.maxLag && nsdf[pos]! > 0) pos++;
     return this.skipNonPositive(pos);
   }
 
   private skipNonPositive(from: number): number {
     let pos = from;
-    while (pos < this.maxLag && this.nsdf[pos] <= 0) pos++;
+    while (pos < this.maxLag && this.nsdf[pos]! <= 0) pos++;
     return pos;
   }
 
   private isLocalPeak(pos: number): boolean {
     const nsdf = this.nsdf;
-    return nsdf[pos] > nsdf[pos - 1] && nsdf[pos] >= nsdf[pos + 1];
+    return nsdf[pos]! > nsdf[pos - 1]! && nsdf[pos]! >= nsdf[pos + 1]!;
   }
 
   /**
@@ -208,9 +208,9 @@ export class McLeodPitchDetector {
     let lobeMax = 0;
     let pos = this.firstLagAfterPrimaryLobe();
     while (pos < end) {
-      if (this.isLocalPeak(pos) && (lobeMax === 0 || nsdf[pos] > nsdf[lobeMax])) lobeMax = pos;
+      if (this.isLocalPeak(pos) && (lobeMax === 0 || nsdf[pos]! > nsdf[lobeMax]!)) lobeMax = pos;
       pos++;
-      const lobeEnded = pos < end && nsdf[pos] <= 0;
+      const lobeEnded = pos < end && nsdf[pos]! <= 0;
       if (lobeEnded && lobeMax > 0) {
         this.maxima[count++] = lobeMax;
         lobeMax = 0;
@@ -229,9 +229,9 @@ export class McLeodPitchDetector {
    * needle on a perfectly steady note.
    */
   private refine(tau: number): { lag: number; value: number } {
-    const y0 = this.nsdf[tau - 1];
-    const y1 = this.nsdf[tau];
-    const y2 = this.nsdf[tau + 1];
+    const y0 = this.nsdf[tau - 1]!;
+    const y1 = this.nsdf[tau]!;
+    const y2 = this.nsdf[tau + 1]!;
     const denominator = 2 * (y0 - 2 * y1 + y2);
     if (denominator === 0) return { lag: tau, value: y1 };
 

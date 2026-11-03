@@ -1,7 +1,7 @@
 import { requestRecordingPermissionsAsync, useAudioStream } from 'expo-audio';
 import { useEffect, useRef, useState } from 'react';
 
-import { MicSource, MicStatus, SampleSink, TARGET_SAMPLE_RATE, toMono } from './types';
+import { type MicSource, type MicStatus, type SampleSink, TARGET_SAMPLE_RATE, toMono } from './types';
 
 /**
  * Native microphone tap.
@@ -68,7 +68,7 @@ export function useMicSource(onSamples: SampleSink, enabled: boolean): MicSource
             error: 'Microphone access was refused. Grant it in system settings so Pontifork can hear your instrument.',
           });
       })
-      .catch((cause) => {
+      .catch((cause: unknown) => {
         if (cancelled) return;
         setPermission({
           status: 'error',
@@ -80,12 +80,12 @@ export function useMicSource(onSamples: SampleSink, enabled: boolean): MicSource
   }, [enabled]);
 
   useEffect(() => {
-    if (!enabled || !granted || !stream) return;
+    if (!enabled || !granted) return;
     let cancelled = false;
 
     stream.start()
       .then(() => { if (!cancelled) setStreaming({ status: 'running', error: null }); })
-      .catch((cause) => {
+      .catch((cause: unknown) => {
         if (cancelled) return;
         setStreaming({
           status: 'error',
@@ -110,7 +110,7 @@ export function useMicSource(onSamples: SampleSink, enabled: boolean): MicSource
 
   return {
     status,
-    sampleRate: stream?.sampleRate ?? TARGET_SAMPLE_RATE,
+    sampleRate: stream.sampleRate,
     error: enabled ? resolved.error : null,
     live: status === 'running',
   };

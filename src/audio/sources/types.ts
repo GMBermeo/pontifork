@@ -37,7 +37,7 @@ export function toMono(interleaved: Float32Array, channels: number): Float32Arra
   const mono = new Float32Array(frames);
   for (let i = 0; i < frames; i++) {
     let sum = 0;
-    for (let c = 0; c < channels; c++) sum += interleaved[i * channels + c];
+    for (let c = 0; c < channels; c++) sum += interleaved[i * channels + c]!;
     mono[i] = sum / channels;
   }
   return mono;
@@ -45,6 +45,8 @@ export function toMono(interleaved: Float32Array, channels: number): Float32Arra
 
 export function int16ToFloat(data: Int16Array): Float32Array {
   const out = new Float32Array(data.length);
-  for (let i = 0; i < data.length; i++) out[i] = data[i] / 32768;
+  data.forEach((sample, i) => {
+    out[i] = sample / 32768;
+  });
   return out;
 }

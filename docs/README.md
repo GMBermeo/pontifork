@@ -5,24 +5,37 @@ made the same way as Ponticello's (`../cello-hero/docs`).
 
 ## Where it is published
 
-**With the web app.** The repository's own Vercel project (see `vercel.json`
-at the root) builds the tuner with `npm run build:web`, which ends by copying
-this folder into `dist/docs/`. The tuner is served at `/`, this page at
-`/docs/`, and its "Open the tuner" links (`../`) go back to the app.
+At **https://pontifork.bermeo.dev**, as a Vercel project of its own: the
+repository imported with **Root Directory** `docs`, **Framework Preset**
+*Other* and no build command, so this folder is served as it is. `vercel.json`
+here sets clean URLs, caching and headers; `.vercelignore` keeps this README
+out; `404.html` answers any address that is not a page.
 
-**On its own**, as Ponticello's site is: import the repository in Vercel again,
-set **Root Directory** to `docs` and **Framework Preset** to *Other*, and leave
-the build command empty. Its links to the tuner are relative, so point them at
-the tuner's address first.
+The tuner itself is a separate project at **https://pontifork-online.bermeo.dev**
+(the repository root, see `../vercel.json`). The page's "Open the tuner"
+links go there, and the app's **Guide** button comes back here. The old
+`/docs/` addresses on the app's domain redirect to this site.
+
+## Search and link previews
+
+The page's head carries everything a search engine or a chat preview reads:
+title, description, canonical address, Open Graph and Twitter cards with the
+link-preview image at an absolute address, and one JSON-LD block describing
+the site, its author, the app, its source code, the six tuning steps and the
+tour video. Beside it, `robots.txt`, `sitemap.xml` (with the screenshots and
+the video) and `llms.txt`, a plain summary for AI search tools.
+
+The JSON-LD `HowTo` repeats the six steps in `#how-to`: change a step's
+heading and change it there too, or `npm run check:site` fails.
 
 ## Preview locally
 
 ```
-npm run build:web && npm run preview:web     # http://localhost:4173/docs/
+npm run preview:site     # http://localhost:4174
 ```
 
-`preview:web` serves the build with `vercel.json`'s redirects, rewrites and
-headers, so it behaves as the deployment will.
+It serves this folder with `vercel.json`'s rules, `.vercelignore` and the
+404 page, as the deployment will.
 
 ## The tuning catalogue
 
@@ -45,7 +58,8 @@ npm run capture:shots -- drop-d tunings             # some scenes
 Chrome runs headless at a phone's size (402 × 874 points, saved 720 px wide)
 or a laptop's (1280 × 800). The microphone is replaced by an oscillator bank
 playing a string-like tone, so every note, cent and tick on screen is what the
-pitch engine made of it. Scenes are defined in `tools/capture-site-shots.mjs`;
+pitch engine made of it. The chord book scenes (`chords-*`, `sequence-play`)
+load stored settings and a saved sequence instead. Scenes are defined in `tools/capture-site-shots.mts`;
 it needs Google Chrome (or `CHROME_PATH`) and ffmpeg for the video.
 
 The page frames the phone screens in a CSS phone (`.device` in `styles.css`)
@@ -62,6 +76,8 @@ composed from the screenshots and the icon, so run it again after capturing.
 npm run check:site
 ```
 
-Every local file the page references exists, every image has alt text and
-every video an accessible name, and the page has a title, a description and a
-link-preview image. It runs as part of `npm run verify`.
+Every local file the page references exists, every image has alt text and a
+size, every video an accessible name; the head, cards and structured data are
+complete and point at the right domains; robots.txt and the sitemap agree with
+the page. It checks the web app's page template the same way, and runs as part
+of `npm run verify`.

@@ -101,7 +101,7 @@ export class TunerTracker {
   constructor(options: TunerTrackerOptions = {}) {
     this.source = options.source ?? new PitchEngine({
       sampleRate: options.sampleRate ?? 16000,
-      minFrequency: options.minFrequency,
+      ...(options.minFrequency === undefined ? {} : { minFrequency: options.minFrequency }),
     });
   }
 

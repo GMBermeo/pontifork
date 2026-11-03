@@ -7,3 +7,5 @@ export * from './smoothing';
 export * from './sources';
 export * from './tunerTracker';
 export * from './usePitch';
+export * from './chordSynth';
+export * from './playChord';

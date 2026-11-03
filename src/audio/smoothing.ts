@@ -39,11 +39,16 @@ const SILENT: SmoothedPitch = { frequency: 0, midi: 0, voiced: false, stability:
 const NEW_NOTE_SEMITONES = 2;
 
 export class TunerPitchSmoother {
+  private readonly windowMs: number;
+  private readonly holdMs: number;
   private samples: TimedSample[] = [];
   private lastVoicedTime = 0;
   private currentMidi: number | null = null;
 
-  constructor(private readonly windowMs = 600, private readonly holdMs = 450) {}
+  constructor(windowMs = 600, holdMs = 450) {
+    this.windowMs = windowMs;
+    this.holdMs = holdMs;
+  }
 
   /** Feeds one frame: a pitch, or null for silence. */
   push(sample: PitchSample | null, nowMs: number): SmoothedPitch {
@@ -61,7 +66,7 @@ export class TunerPitchSmoother {
     this.samples.push({ ...sample, time: nowMs });
 
     const cutoff = nowMs - this.windowMs;
-    while (this.samples.length > 0 && this.samples[0].time < cutoff) this.samples.shift();
+    while ((this.samples[0]?.time ?? cutoff) < cutoff) this.samples.shift();
 
     return this.median();
   }
@@ -72,10 +77,11 @@ export class TunerPitchSmoother {
     this.lastVoicedTime = 0;
   }
 
-  private dominantMidi(): number {
+  /** The note heard most often; ties go to the one heard first. */
+  private dominantMidi(latest: TimedSample): number {
     const counts = new Map<number, number>();
     for (const s of this.samples) counts.set(s.midi, (counts.get(s.midi) ?? 0) + 1);
-    let dominant = this.samples[this.samples.length - 1].midi;
+    let dominant = latest.midi;
     let most = 0;
     for (const [midi, count] of counts) {
       if (count > most) {
@@ -87,14 +93,15 @@ export class TunerPitchSmoother {
   }
 
   private median(): SmoothedPitch {
-    if (this.samples.length === 0) return SILENT;
-    const midi = this.dominantMidi();
+    const latest = this.samples.at(-1);
+    if (!latest) return SILENT;
+    const midi = this.dominantMidi(latest);
     const agreeing = this.samples.filter((s) => s.midi === midi);
     const frequencies = agreeing.map((s) => s.frequency).sort((a, b) => a - b);
     const middle = Math.floor(frequencies.length / 2);
-    const frequency = frequencies.length % 2 === 0
-      ? (frequencies[middle - 1] + frequencies[middle]) / 2
-      : frequencies[middle];
+    // The dominant note is one of the samples, so there is always a middle one.
+    const upper = frequencies[middle] ?? latest.frequency;
+    const frequency = frequencies.length % 2 === 0 ? ((frequencies[middle - 1] ?? upper) + upper) / 2 : upper;
     return {
       frequency,
       midi,

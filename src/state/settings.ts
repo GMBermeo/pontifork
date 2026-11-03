@@ -1,9 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSyncExternalStore } from 'react';
 
-import { findTuning, setupKey, validStringCount, type InstrumentId, type Tuning } from '@domain';
+import {
+  clampCapo, findTuning, keyId, setupKey, validStringCount,
+  type BookTab, type DotLabels, type InstrumentId, type KeyId, type MusicalKey, type Tuning,
+} from '@domain';
 
-import { clampA4, DEFAULT_SETTINGS, sanitizeSettings, type Settings } from './settingsModel';
+import { clampA4, DEFAULT_SETTINGS, sanitizeSettings, type BookSettings, type Settings } from './settingsModel';
 
 /**
  * The player's settings: a module-level store, persisted to AsyncStorage.
@@ -78,20 +81,114 @@ export function useA4(): number {
   return useSettings((s) => s.a4);
 }
 
+/**
+ * The instrument, strings, tuning and capo in use, for an event handler (a
+ * sequence records what it was made for). Never call it during render: use
+ * the hooks, or the value will not update.
+ */
+export function setupNow(): { instrument: InstrumentId; strings: number; tuningId: string; capo: number } {
+  return { instrument: state.instrument, strings: state.strings[state.instrument], tuningId: currentTuning(state).id, capo: state.book.capo };
+}
+
+// ─── The chord book ──────────────────────────────────────────────────────────
+
+export function useBookTab(): BookTab {
+  return useSettings((s) => s.book.tab);
+}
+
+/** The key filter as stored (`9-minor`), or null; parse it with `parseKeyId`. */
+export function useBookKey(): KeyId | null {
+  return useSettings((s) => s.book.key);
+}
+
+export function useDotLabels(): DotLabels {
+  return useSettings((s) => s.book.labels);
+}
+
+export function useAllPositions(): boolean {
+  return useSettings((s) => s.book.allPositions);
+}
+
+export function useLeftHanded(): boolean {
+  return useSettings((s) => s.book.leftHanded);
+}
+
+/** The capo as set, whatever the instrument; the book ignores it on the cello. */
+export function useCapo(): number {
+  return useSettings((s) => s.book.capo);
+}
+
+export function useChordSound(): boolean {
+  return useSettings((s) => s.book.sound);
+}
+
+function updateBook(change: (book: BookSettings) => BookSettings): void {
+  update((s) => ({ ...s, book: change(s.book) }));
+}
+
+export const bookActions = {
+  setTab: (tab: BookTab): void => {
+    updateBook((book) => (tab === 'key' && book.key === null ? book : { ...book, tab }));
+  },
+
+  /** Choosing a key opens its page; clearing it leaves that page for the major chords. */
+  setKey: (key: MusicalKey | null): void => {
+    updateBook((book) => {
+      if (key) return { ...book, key: keyId(key), tab: 'key' };
+      return { ...book, key: null, tab: book.tab === 'key' ? 'maj' : book.tab };
+    });
+  },
+
+  setLabels: (labels: DotLabels): void => {
+    updateBook((book) => ({ ...book, labels }));
+  },
+
+  setAllPositions: (allPositions: boolean): void => {
+    updateBook((book) => ({ ...book, allPositions }));
+  },
+
+  setLeftHanded: (leftHanded: boolean): void => {
+    updateBook((book) => ({ ...book, leftHanded }));
+  },
+
+  setCapo: (capo: number): void => {
+    updateBook((book) => ({ ...book, capo: clampCapo(capo) }));
+  },
+
+  setSound: (sound: boolean): void => {
+    updateBook((book) => ({ ...book, sound }));
+  },
+};
+
 export const settingsActions = {
-  setInstrument(instrument: InstrumentId): void {
+  setInstrument: (instrument: InstrumentId): void => {
     update((s) => ({ ...s, instrument }));
   },
 
-  setStringCount(strings: number): void {
+  setStringCount: (strings: number): void => {
     update((s) => ({ ...s, strings: { ...s.strings, [s.instrument]: validStringCount(s.instrument, strings) } }));
   },
 
-  setTuning(id: string): void {
+  setTuning: (id: string): void => {
     update((s) => ({ ...s, tunings: { ...s.tunings, [setupKey(s.instrument, s.strings[s.instrument])]: id } }));
   },
 
-  setA4(hz: number): void {
+  setA4: (hz: number): void => {
     update((s) => ({ ...s, a4: clampA4(hz) }));
+  },
+
+  /** Instrument, string count, tuning and capo at once: what a saved sequence was made for. */
+  setSetup: (instrument: InstrumentId, strings: number, tuningId: string, capo: number): void => {
+    update((s) => {
+      const count = validStringCount(instrument, strings);
+      const tuning = findTuning(instrument, count, tuningId);
+      return {
+        ...s,
+        instrument,
+        strings: { ...s.strings, [instrument]: count },
+        tunings: { ...s.tunings, [setupKey(instrument, count)]: tuning.id },
+        book: { ...s.book, capo: clampCapo(capo) },
+      };
+    });
   },
 };

@@ -32,7 +32,9 @@ export function useStringLock(tuning: Tuning): [number | null, (index: number | 
 
 function confirmWithHaptics(): void {
   if (Platform.OS === 'web') return;
-  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+  Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {
+    // No haptics on this device: the tick on screen is enough.
+  });
 }
 
 /**
@@ -77,12 +79,16 @@ const KEEP_AWAKE_TAG = 'pontifork-tuner';
  * web this needs the Wake Lock API, which not every browser has; without it
  * the screen simply follows the system timeout.
  */
-export function useKeepAwakeWhile(active: boolean): void {
+export function useKeepAwakeWhile(active: boolean, tag: string = KEEP_AWAKE_TAG): void {
   useEffect(() => {
     if (!active) return;
-    activateKeepAwakeAsync(KEEP_AWAKE_TAG).catch(() => {});
+    activateKeepAwakeAsync(tag).catch(() => {
+      // The screen may dim mid-tuning; nothing worse.
+    });
     return () => {
-      deactivateKeepAwake(KEEP_AWAKE_TAG).catch(() => {});
+      deactivateKeepAwake(tag).catch(() => {
+        // Never activated: nothing to release.
+      });
     };
-  }, [active]);
+  }, [active, tag]);
 }

@@ -49,8 +49,8 @@ export class FFT {
     this.transform(re, im, true);
     const n = this.size;
     for (let i = 0; i < n; i++) {
-      re[i] /= n;
-      im[i] /= n;
+      re[i]! /= n;
+      im[i]! /= n;
     }
   }
 
@@ -59,10 +59,10 @@ export class FFT {
     const { reverse, cos, sin } = this;
 
     for (let i = 0; i < n; i++) {
-      const j = reverse[i];
+      const j = reverse[i]!;
       if (j > i) {
-        let t = re[i]; re[i] = re[j]; re[j] = t;
-        t = im[i]; im[i] = im[j]; im[j] = t;
+        let t = re[i]!; re[i] = re[j]!; re[j] = t;
+        t = im[i]!; im[i] = im[j]!; im[j] = t;
       }
     }
 
@@ -71,15 +71,15 @@ export class FFT {
       const step = n / size;
       for (let i = 0; i < n; i += size) {
         for (let j = i, k = 0; j < i + half; j++, k += step) {
-          const c = cos[k];
-          const s = invert ? sin[k] : -sin[k];
+          const c = cos[k]!;
+          const s = invert ? sin[k]! : -sin[k]!;
           const l = j + half;
-          const tre = re[l] * c - im[l] * s;
-          const tim = re[l] * s + im[l] * c;
-          re[l] = re[j] - tre;
-          im[l] = im[j] - tim;
-          re[j] += tre;
-          im[j] += tim;
+          const tre = re[l]! * c - im[l]! * s;
+          const tim = re[l]! * s + im[l]! * c;
+          re[l] = re[j]! - tre;
+          im[l] = im[j]! - tim;
+          re[j]! += tre;
+          im[j]! += tim;
         }
       }
     }
@@ -104,17 +104,17 @@ export function autocorrelate(
 
   re.fill(0);
   im.fill(0);
-  for (let i = 0; i < windowSize; i++) re[i] = x[i];
+  for (let i = 0; i < windowSize; i++) re[i] = x[i]!;
 
   fft.forward(re, im);
   for (let i = 0; i < n; i++) {
-    const p = re[i] * re[i] + im[i] * im[i];
+    const p = re[i]! * re[i]! + im[i]! * im[i]!;
     re[i] = p;
     im[i] = 0;
   }
   fft.inverse(re, im);
 
-  for (let tau = 0; tau <= maxLag; tau++) out[tau] = re[tau];
+  for (let tau = 0; tau <= maxLag; tau++) out[tau] = re[tau]!;
 }
 
 export interface AcfScratch {

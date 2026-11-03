@@ -87,7 +87,7 @@ export function ReferencePitchCard() {
 }
 
 /** The input meter, the button that opens the microphone on the web, and any error. */
-export function MicCard({ pitch, onEnable }: { pitch: LivePitch; onEnable: (() => void) | null }) {
+export function MicCard({ pitch, onEnable }: Readonly<{ pitch: LivePitch; onEnable: (() => void) | null }>) {
   const theme = useTheme();
   const { mic } = pitch;
   return (

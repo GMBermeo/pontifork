@@ -8,20 +8,30 @@
  * 42.7 ms of history in a 512-sample window, which is ~5× cheaper.
  */
 
+/** A biquad's coefficients, normalised so a0 is 1. */
+interface BiquadCoefficients {
+  readonly b0: number;
+  readonly b1: number;
+  readonly b2: number;
+  readonly a1: number;
+  readonly a2: number;
+}
+
 /** One biquad section in transposed direct form II. */
 class Biquad {
+  private readonly c: BiquadCoefficients;
   private z1 = 0;
   private z2 = 0;
 
-  constructor(
-    private readonly b0: number, private readonly b1: number, private readonly b2: number,
-    private readonly a1: number, private readonly a2: number,
-  ) {}
+  constructor(coefficients: BiquadCoefficients) {
+    this.c = coefficients;
+  }
 
   process(x: number): number {
-    const y = this.b0 * x + this.z1;
-    this.z1 = this.b1 * x - this.a1 * y + this.z2;
-    this.z2 = this.b2 * x - this.a2 * y;
+    const { b0, b1, b2, a1, a2 } = this.c;
+    const y = b0 * x + this.z1;
+    this.z1 = b1 * x - a1 * y + this.z2;
+    this.z2 = b2 * x - a2 * y;
     return y;
   }
 
@@ -37,17 +47,17 @@ function lowpassBiquad(sampleRate: number, cutoffHz: number, q: number): Biquad 
   const alpha = Math.sin(w0) / (2 * q);
 
   const a0 = 1 + alpha;
-  return new Biquad(
-    ((1 - cos) / 2) / a0,
-    (1 - cos) / a0,
-    ((1 - cos) / 2) / a0,
-    (-2 * cos) / a0,
-    (1 - alpha) / a0,
-  );
+  return new Biquad({
+    b0: ((1 - cos) / 2) / a0,
+    b1: (1 - cos) / a0,
+    b2: ((1 - cos) / 2) / a0,
+    a1: (-2 * cos) / a0,
+    a2: (1 - alpha) / a0,
+  });
 }
 
-/** Section Q values for a 4th-order Butterworth response. */
-const BUTTERWORTH_Q4 = [1 / (2 * Math.cos(Math.PI / 8)), 1 / (2 * Math.cos((3 * Math.PI) / 8))];
+/** Section Q values for a 4th-order Butterworth response: two biquads. */
+const BUTTERWORTH_Q4 = [1 / (2 * Math.cos(Math.PI / 8)), 1 / (2 * Math.cos((3 * Math.PI) / 8))] as const;
 
 /**
  * Default band limit before the ÷4 drop.
@@ -65,13 +75,15 @@ export const DEFAULT_BAND_LIMIT_HZ = 1000;
 export class Decimator {
   readonly factor: number;
   readonly outputSampleRate: number;
-  private readonly sections: Biquad[];
+  private readonly first: Biquad;
+  private readonly second: Biquad;
   private phase = 0;
 
   constructor(sampleRate: number, factor = 4, cutoffHz = DEFAULT_BAND_LIMIT_HZ) {
     this.factor = factor;
     this.outputSampleRate = sampleRate / factor;
-    this.sections = BUTTERWORTH_Q4.map((q) => lowpassBiquad(sampleRate, cutoffHz, q));
+    this.first = lowpassBiquad(sampleRate, cutoffHz, BUTTERWORTH_Q4[0]);
+    this.second = lowpassBiquad(sampleRate, cutoffHz, BUTTERWORTH_Q4[1]);
   }
 
   /**
@@ -82,8 +94,7 @@ export class Decimator {
   process(input: Float32Array, count: number, output: Float32Array): number {
     let written = 0;
     for (let i = 0; i < count; i++) {
-      let x = input[i];
-      for (let s = 0; s < this.sections.length; s++) x = this.sections[s].process(x);
+      const x = this.second.process(this.first.process(input[i]!));
       if (this.phase === 0) output[written++] = x;
       this.phase = (this.phase + 1) % this.factor;
     }
@@ -91,7 +102,8 @@ export class Decimator {
   }
 
   reset(): void {
-    this.sections.forEach((s) => s.reset());
+    this.first.reset();
+    this.second.reset();
     this.phase = 0;
   }
 }
@@ -104,18 +116,20 @@ export class Decimator {
  * the whole stream around on every audio callback.
  */
 export class RingBuffer {
+  readonly capacity: number;
   private readonly buffer: Float32Array;
   private writeIndex = 0;
   /** Total samples ever written; the caller uses this as a monotonic clock. */
   written = 0;
 
-  constructor(readonly capacity: number) {
+  constructor(capacity: number) {
+    this.capacity = capacity;
     this.buffer = new Float32Array(capacity);
   }
 
   write(samples: Float32Array, count = samples.length): void {
     for (let i = 0; i < count; i++) {
-      this.buffer[this.writeIndex] = samples[i];
+      this.buffer[this.writeIndex] = samples[i]!;
       this.writeIndex = (this.writeIndex + 1) % this.capacity;
     }
     this.written += count;
@@ -126,7 +140,7 @@ export class RingBuffer {
     if (this.written < length || length > this.capacity) return false;
     let index = (this.writeIndex - length + this.capacity) % this.capacity;
     for (let i = 0; i < length; i++) {
-      out[i] = this.buffer[index];
+      out[i] = this.buffer[index]!;
       index = index + 1 === this.capacity ? 0 : index + 1;
     }
     return true;

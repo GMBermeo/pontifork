@@ -1,4 +1,4 @@
-import { MicSource, SampleSink, TARGET_SAMPLE_RATE } from './types';
+import { type MicSource, type SampleSink, TARGET_SAMPLE_RATE } from './types';
 
 /**
  * Type anchor and last-resort fallback for the platform-specific microphone

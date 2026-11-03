@@ -1,0 +1,8 @@
+# Pontifork's web app. The tuner and the chord book are pages worth finding;
+# the saved sequences only ever show the visitor's own.
+User-agent: *
+Allow: /
+Disallow: /sequence
+Disallow: /sequences
+
+Sitemap: https://pontifork-online.bermeo.dev/sitemap.xml

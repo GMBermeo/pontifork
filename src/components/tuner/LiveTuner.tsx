@@ -17,11 +17,11 @@ import { TunerDial } from './TunerDial';
  * microphone and reference-pitch settings. One column on a phone; on a wider
  * screen the dial gets the left side to itself.
  */
-export function LiveTuner({ listening, onEnableMic }: {
+export function LiveTuner({ listening, onEnableMic }: Readonly<{
   listening: boolean;
   /** Opens the microphone where that needs a gesture (the web); null once it is open. */
   onEnableMic: (() => void) | null;
-}) {
+}>) {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const instrument = useInstrument();

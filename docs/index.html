@@ -3,18 +3,208 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Pontifork — every string, in tune</title>
-  <meta name="description" content="Pontifork is a free, open-source tuner for cello, guitar (6 and 7 strings) and bass (4, 5 and 6 strings), with every common standard, drop, open and lowered tuning. Use it in any browser or as an app. Nothing is recorded and nothing leaves the device.">
+  <title>Pontifork — tuner and chord book for cello, guitar and bass</title>
+  <meta name="description" content="A free, open-source tuner and chord book for cello, guitar and bass: 53 tunings, and chords whose shapes follow your tuning. In a browser or as an app.">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="author" content="Guilherme Yuri Bermeo">
+  <link rel="canonical" href="https://pontifork.bermeo.dev/">
   <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0B0A14" media="(prefers-color-scheme: dark)">
-  <link rel="icon" href="assets/brand/favicon.png">
+  <link rel="icon" href="assets/brand/favicon.png" type="image/png">
   <link rel="icon" href="assets/brand/pontifork-icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
-  <meta property="og:title" content="Pontifork — every string, in tune">
-  <meta property="og:description" content="A tuner for cello, guitar and bass, with every common standard, drop, open and lowered tuning. In your browser or on your phone. Free and open source.">
-  <meta property="og:image" content="assets/brand/og-image.png">
   <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Pontifork">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:url" content="https://pontifork.bermeo.dev/">
+  <meta property="og:title" content="Pontifork — every string, in tune">
+  <meta property="og:description" content="A tuner and chord book for cello, guitar and bass, with every common standard, drop, open and lowered tuning. In your browser or on your phone. Free and open source.">
+  <meta property="og:image" content="https://pontifork.bermeo.dev/assets/brand/og-image.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Pontifork, every string in tune: the tuner on three phones, with the tuning list, a guitar string nine cents flat, and a cello in tune in the dark theme.">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Pontifork — every string, in tune">
+  <meta name="twitter:description" content="A tuner and chord book for cello, guitar and bass, with every common standard, drop, open and lowered tuning. In your browser or on your phone. Free and open source.">
+  <meta name="twitter:image" content="https://pontifork.bermeo.dev/assets/brand/og-image.png">
+  <meta name="twitter:image:alt" content="Pontifork, every string in tune: the tuner on three phones, with the tuning list, a guitar string nine cents flat, and a cello in tune in the dark theme.">
+  <!-- What the page is, for search engines: https://schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://pontifork.bermeo.dev/#website",
+        "url": "https://pontifork.bermeo.dev/",
+        "name": "Pontifork",
+        "description": "A free, open-source tuner and chord book for cello, guitar and bass: 53 tunings, and chords whose shapes follow your tuning. In a browser or as an app.",
+        "inLanguage": "en",
+        "publisher": {
+          "@id": "https://pontifork.bermeo.dev/#author"
+        }
+      },
+      {
+        "@type": "Person",
+        "@id": "https://pontifork.bermeo.dev/#author",
+        "name": "Guilherme Yuri Bermeo",
+        "url": "https://gm.bermeo.dev"
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://pontifork.bermeo.dev/#page",
+        "url": "https://pontifork.bermeo.dev/",
+        "name": "Pontifork — tuner and chord book for cello, guitar and bass",
+        "description": "A free, open-source tuner and chord book for cello, guitar and bass: 53 tunings, and chords whose shapes follow your tuning. In a browser or as an app.",
+        "inLanguage": "en",
+        "isPartOf": {
+          "@id": "https://pontifork.bermeo.dev/#website"
+        },
+        "about": {
+          "@id": "https://pontifork.bermeo.dev/#app"
+        },
+        "primaryImageOfPage": {
+          "@type": "ImageObject",
+          "url": "https://pontifork.bermeo.dev/assets/brand/og-image.png",
+          "width": 1200,
+          "height": 630
+        }
+      },
+      {
+        "@type": [
+          "SoftwareApplication",
+          "WebApplication"
+        ],
+        "@id": "https://pontifork.bermeo.dev/#app",
+        "name": "Pontifork",
+        "url": "https://pontifork-online.bermeo.dev/",
+        "description": "A tuner and chord book for cello, guitar (6 and 7 strings) and bass (4, 5 and 6 strings), with 53 standard, drop, open and lowered tunings and 120 chords whose shapes follow the tuning.",
+        "applicationCategory": "MultimediaApplication",
+        "applicationSubCategory": "Instrument tuner",
+        "operatingSystem": "Android, any web browser",
+        "browserRequirements": "Requires JavaScript and microphone access.",
+        "inLanguage": "en",
+        "isAccessibleForFree": true,
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "softwareVersion": "1.1.0",
+        "license": "https://opensource.org/licenses/MIT",
+        "downloadUrl": "https://github.com/GMBermeo/pontifork/releases",
+        "image": "https://pontifork.bermeo.dev/assets/brand/pontifork-icon-512.png",
+        "screenshot": [
+          "https://pontifork.bermeo.dev/assets/screenshots/tuner-guitar.webp",
+          "https://pontifork.bermeo.dev/assets/screenshots/chords-shapes.webp",
+          "https://pontifork.bermeo.dev/assets/screenshots/tunings.webp",
+          "https://pontifork.bermeo.dev/assets/screenshots/desktop.webp"
+        ],
+        "featureList": [
+          "Tunes cello, guitar with 6 or 7 strings, and bass with 4, 5 or 6 strings",
+          "53 standard, lowered, drop, open and alternate tunings",
+          "Knows which string you are tuning, and can lock onto one",
+          "Reference pitch from 415 to 466 Hz",
+          "Chord book of 120 chords whose shapes follow the tuning and capo",
+          "Saved chord sequences with a silent play-through",
+          "Listens on the device: nothing is recorded or sent"
+        ],
+        "author": {
+          "@id": "https://pontifork.bermeo.dev/#author"
+        },
+        "sameAs": [
+          "https://github.com/GMBermeo/pontifork"
+        ]
+      },
+      {
+        "@type": "SoftwareSourceCode",
+        "@id": "https://pontifork.bermeo.dev/#source",
+        "name": "Pontifork",
+        "codeRepository": "https://github.com/GMBermeo/pontifork",
+        "programmingLanguage": "TypeScript",
+        "runtimePlatform": "React Native, Expo",
+        "license": "https://opensource.org/licenses/MIT",
+        "author": {
+          "@id": "https://pontifork.bermeo.dev/#author"
+        },
+        "targetProduct": {
+          "@id": "https://pontifork.bermeo.dev/#app"
+        }
+      },
+      {
+        "@type": "HowTo",
+        "@id": "https://pontifork.bermeo.dev/#how-to",
+        "name": "Tune in six steps",
+        "description": "How to tune a cello, guitar or bass with Pontifork, the same on a phone, a tablet or a computer.",
+        "tool": [
+          {
+            "@type": "HowToTool",
+            "name": "Pontifork"
+          },
+          {
+            "@type": "HowToTool",
+            "name": "A microphone: the phone's or the computer's own"
+          }
+        ],
+        "step": [
+          {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Open it and let it listen",
+            "text": "Open the tuner in a browser, or the app, and allow the microphone when asked. On the web, press Enable microphone first: a browser only listens after you ask it to.",
+            "url": "https://pontifork.bermeo.dev/#how-to"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Pick your instrument",
+            "text": "Cello, guitar or bass, and for guitar and bass how many strings it has. Pontifork remembers the choice.",
+            "url": "https://pontifork.bermeo.dev/#how-to"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Choose a tuning",
+            "text": "Press Change on the tuning card. Tunings are grouped (standard and lowered, drop, open, alternate), each with the notes of its open strings.",
+            "url": "https://pontifork.bermeo.dev/#how-to"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 4,
+            "name": "Play one string at a time",
+            "text": "Pluck or bow one open string and let it ring. The big letter is the note that string should be; the needle and the number show how far off it is, in cents.",
+            "url": "https://pontifork.bermeo.dev/#how-to"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 5,
+            "name": "Follow the needle",
+            "text": "Tune up means flat: tighten. Tune down means sharp: loosen. Small turns, then let the string ring again.",
+            "url": "https://pontifork.bermeo.dev/#how-to"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 6,
+            "name": "Hold it, then check them all",
+            "text": "Hold a string in the green for a moment and it gets a tick. Tightening one string changes the pull on the others, so go round them all once more.",
+            "url": "https://pontifork.bermeo.dev/#how-to"
+          }
+        ]
+      },
+      {
+        "@type": "VideoObject",
+        "@id": "https://pontifork.bermeo.dev/#tour",
+        "name": "Tuning a guitar with Pontifork",
+        "description": "Tuning a guitar from the low E up in the Pontifork web app: each string glides in from off pitch, the needle settles in the green, and the string gets a tick.",
+        "thumbnailUrl": "https://pontifork.bermeo.dev/assets/screenshots/tuner-guitar.webp",
+        "contentUrl": "https://pontifork.bermeo.dev/assets/video/tour.mp4",
+        "uploadDate": "2026-11-02",
+        "inLanguage": "en"
+      }
+    ]
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;800&display=swap" rel="stylesheet">
@@ -28,10 +218,11 @@
     </a>
     <nav aria-label="Sections">
       <a href="#features">Features</a>
+      <a href="#chords">Chords</a>
       <a href="#how-to">How to use</a>
       <a href="#tunings">Tunings</a>
       <a href="#open-source">Open source</a>
-      <a class="button small" href="../">Open the tuner</a>
+      <a class="button small" href="https://pontifork-online.bermeo.dev/">Open the tuner</a>
     </nav>
   </header>
 
@@ -43,15 +234,17 @@
         <p class="lede">
           Pontifork tunes the <strong>cello</strong>, the <strong>guitar</strong> with six or seven strings and the
           <strong>bass</strong> with four, five or six — in every standard, drop, open and lowered tuning players
-          actually use. Open it in any browser or install the app. No account, and nothing leaves your device.
+          actually use, with a chord book that follows your tuning. Open it in any browser or install the app. No
+          account, and nothing leaves your device.
         </p>
         <div class="actions">
-          <a class="button" href="../">Open the tuner</a>
+          <a class="button" href="https://pontifork-online.bermeo.dev/">Open the tuner</a>
           <a class="button ghost" href="#how-to">How to use it</a>
         </div>
         <ul class="facts" aria-label="At a glance">
           <li><strong>53</strong><span>tunings, from drop A to open G</span></li>
           <li><strong>±5¢</strong><span>counts as in tune</span></li>
+          <li><strong>120</strong><span>chords, in any of them</span></li>
         </ul>
       </div>
       <figure class="hero-device">
@@ -153,6 +346,67 @@
           <div class="device"><img loading="lazy" src="assets/screenshots/reference.webp" alt="The A string in tune against a reference of A equals 442 hertz, with the reference pitch card and its reset button below." width="720" height="1565"></div>
         </div>
       </article>
+    </section>
+
+    <section id="chords" class="features chords">
+      <header class="section-head">
+        <p class="kicker">The chord book</p>
+        <h2>Every chord, in the tuning you are in</h2>
+        <p class="section-lede">Twelve roots of ten types (major, minor, 7, m7, maj7, sus2, sus4, 5, dim and aug) for
+          cello, guitar and bass, worked out for the tuning and capo in use.</p>
+      </header>
+
+      <article class="feature">
+        <div class="copy">
+          <p class="kicker">Shapes follow the tuning</p>
+          <h3>A C shape, half a step down, is a B</h3>
+          <p>The book lists chords by how they sound. Tune half a step down and B’s page shows the C shape you already
+            know, and says so; a whole step down that shape is B♭, and with a capo on the second fret it is D. Drop
+            tunings keep the shapes and fret the low string two higher, or leave it out. Open tunings, DADGAD and the
+            cello’s scordaturas get shapes of their own, found by search.</p>
+          <p>On guitar each chord has its open shape, where it has one, and the E and A shape barres; a seven-string
+            adds the E shape on its low string. Bass and cello chords are found the same way as Ponticello’s, within
+            one hand’s reach.</p>
+        </div>
+        <div class="devices duo">
+          <div class="device"><img loading="lazy" src="assets/screenshots/chords-shapes.webp" alt="The chord book for guitar a half step down: C as the A shape at fret 4, D flat as the D shape, D as the A shape at fret 6 and E flat as the E shape. Below the grid, a sequence called Verse: G flat, B, D flat and E flat minor." width="720" height="1565"></div>
+          <div class="device"><img loading="lazy" src="assets/screenshots/chords-detail.webp" alt="B opened in the dark theme, a half step down: the C shape, its fingers, and the notes B, D sharp, F sharp, B and D sharp under the strings." width="720" height="1565"></div>
+        </div>
+      </article>
+
+      <article class="feature reverse">
+        <div class="copy">
+          <p class="kicker">Keys</p>
+          <h3>The chords of a key, in degree order</h3>
+          <p>Pick a key and its own page opens: in G major, G, Am, Bm, C, D, Em and F♯dim with their numerals, then the
+            sevenths. Every other page lists the key’s chords first and fades the rest. Minor keys include the major V
+            nearly every song in a minor key uses.</p>
+        </div>
+        <div class="devices single">
+          <div class="device"><img loading="lazy" src="assets/screenshots/chords-key.webp" alt="The key of G major: G one, A minor two, B minor three and C four, each with its shape." width="720" height="1565"></div>
+        </div>
+      </article>
+
+      <article class="feature">
+        <div class="copy">
+          <p class="kicker">Sequences</p>
+          <h3>A song’s chords, in order</h3>
+          <p>Tap <strong>+</strong> on a chord and it joins the sequence pinned under the book. Keep as many as you
+            like, name them, move and remove chords. <strong>Play</strong> shows each chord in turn, two seconds apiece,
+            without a sound, so the music is yours. A sequence remembers the tuning it was made in, and offers to
+            switch back to it.</p>
+        </div>
+        <div class="devices single">
+          <div class="device"><img loading="lazy" src="assets/screenshots/sequence-play.webp" alt="The Verse sequence playing through in the dark theme: B, the C shape, now; D flat, the D shape, next; all four chords below." width="720" height="1565"></div>
+        </div>
+      </article>
+
+      <ul class="tips" aria-label="Reading the diagrams">
+        <li><strong>Fingers or notes.</strong> Each dot carries the finger to use, or the note it sounds. The root is a square.</li>
+        <li><strong>All positions.</strong> Mark every place the chord’s notes fall up to the twelfth fret, to play melodies over it.</li>
+        <li><strong>Left-handed.</strong> Mirror every diagram, so the low string is on the right.</li>
+        <li><strong>Hear it.</strong> Tap a chord to hear it strummed (or bowed, on the cello) at your reference pitch.</li>
+      </ul>
     </section>
 
     <section id="how-to" class="how-to">

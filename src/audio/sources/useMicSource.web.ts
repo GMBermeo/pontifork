@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { MicSource, MicStatus, SampleSink, TARGET_SAMPLE_RATE } from './types';
+import { type MicSource, type MicStatus, type SampleSink, TARGET_SAMPLE_RATE } from './types';
 
 /**
  * Web microphone tap.
@@ -68,13 +68,19 @@ export function useMicSource(onSamples: SampleSink, enabled: boolean): MicSource
     if (!enabled) return;
 
     let cancelled = false;
+    // Read through a call: after an `await` the flag may have changed, which
+    // a plain read's narrowing cannot know.
+    const isCancelled = (): boolean => cancelled;
     let context: AudioContext | null = null;
     let stream: MediaStream | null = null;
     let node: AudioWorkletNode | null = null;
     let objectUrl: string | null = null;
 
-    async function start() {
-      if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
+    async function start(): Promise<void> {
+      // An insecure origin (plain HTTP on a LAN address) has no
+      // `navigator.mediaDevices` at all, whatever the DOM types say.
+      const devices = typeof navigator === 'undefined' ? undefined : (navigator as Partial<Navigator>).mediaDevices;
+      if (!devices) {
         setOutcome({
           status: 'unavailable',
           sampleRate: TARGET_SAMPLE_RATE,
@@ -84,7 +90,7 @@ export function useMicSource(onSamples: SampleSink, enabled: boolean): MicSource
       }
 
       try {
-        stream = await navigator.mediaDevices.getUserMedia({
+        stream = await devices.getUserMedia({
           audio: {
             echoCancellation: false,
             noiseSuppression: false,
@@ -92,17 +98,17 @@ export function useMicSource(onSamples: SampleSink, enabled: boolean): MicSource
             channelCount: 1,
           },
         });
-        if (cancelled) return;
+        if (isCancelled()) return;
 
         context = new AudioContext({ sampleRate: TARGET_SAMPLE_RATE, latencyHint: 'interactive' });
         // Chrome may hand back a context that is suspended until a gesture.
         if (context.state === 'suspended') await context.resume();
-        if (cancelled) return;
+        if (isCancelled()) return;
 
         const blob = new Blob([PROCESSOR_SOURCE], { type: 'application/javascript' });
         objectUrl = URL.createObjectURL(blob);
         await context.audioWorklet.addModule(objectUrl);
-        if (cancelled) return;
+        if (isCancelled()) return;
 
         node = new AudioWorkletNode(context, 'pontifork-tap', { numberOfOutputs: 0 });
         node.port.onmessage = (event: MessageEvent<Float32Array>) => {
@@ -112,8 +118,8 @@ export function useMicSource(onSamples: SampleSink, enabled: boolean): MicSource
 
         setOutcome({ status: 'running', sampleRate: context.sampleRate, error: null });
       } catch (cause) {
-        if (cancelled) return;
-        const name = (cause as { name?: string })?.name;
+        if (isCancelled()) return;
+        const name = errorName(cause);
         const denied = name === 'NotAllowedError' || name === 'SecurityError';
         setOutcome({
           status: denied ? 'denied' : 'error',
@@ -123,15 +129,17 @@ export function useMicSource(onSamples: SampleSink, enabled: boolean): MicSource
       }
     }
 
-    start();
+    void start();
 
     return () => {
       cancelled = true;
       if (node) node.port.onmessage = null;
       node?.disconnect();
       stream?.getTracks().forEach((track) => track.stop());
-      context?.close().catch(() => {});
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      context?.close().catch(() => {
+        // Already closed.
+      });
+      if (objectUrl !== null) URL.revokeObjectURL(objectUrl);
     };
   }, [enabled]);
 
@@ -146,4 +154,9 @@ export function useMicSource(onSamples: SampleSink, enabled: boolean): MicSource
 
 function errorMessage(cause: unknown): string {
   return cause instanceof Error ? cause.message : String(cause);
+}
+
+/** A DOMException's or Error's name (`NotAllowedError`), or null for anything else. */
+function errorName(cause: unknown): string | null {
+  return typeof cause === 'object' && cause !== null && 'name' in cause && typeof cause.name === 'string' ? cause.name : null;
 }

@@ -1,6 +1,6 @@
 import { memo, useMemo } from 'react';
 import { View } from 'react-native';
-import Animated, { SharedValue, useAnimatedStyle } from 'react-native-reanimated';
+import Animated, { type SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 
 import { useTheme } from '@theme';
 import { Label } from '../ui';
@@ -32,7 +32,7 @@ export const LevelMeter = memo(function LevelMeter({
 
 function LevelBar({
   index, level, height,
-}: { index: number; level: SharedValue<number>; height: number }) {
+}: Readonly<{ index: number; level: SharedValue<number>; height: number }>) {
   const theme = useTheme();
   const threshold = (index + 1) / BAR_COUNT;
 

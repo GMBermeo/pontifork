@@ -19,7 +19,7 @@
 
 import { Decimator, RingBuffer } from './decimate';
 import { SpectralFluxGate } from './flux';
-import { McLeodPitchDetector, PitchResult } from './mpm';
+import { McLeodPitchDetector, type PitchResult } from './mpm';
 
 export interface PitchFrame {
   /** Fundamental in Hz; 0 when nothing is sounding. */
@@ -88,7 +88,7 @@ const SILENT_FRAME: PitchFrame = {
   frequency: 0, clarity: 0, rms: 0, voiced: false, band: 'none', held: false, sampleTime: 0,
 };
 
-type Choice = { result: PitchResult; band: 'high' | 'low' };
+interface Choice { result: PitchResult; band: 'high' | 'low' }
 
 /** n when `higher` is a whole multiple n (2…8) of `lower` within tolerance; otherwise null. */
 export function harmonicNumber(higher: number, lower: number): number | null {
@@ -238,10 +238,10 @@ export class PitchEngine {
         }
       }
 
-      const fresh = this.lastLow !== null
-        && this.highBuffer.written - this.lastLow.sampleTime <= LOW_MAX_AGE_SAMPLES;
+      const low = this.lastLow;
+      const fresh = low !== null && this.highBuffer.written - low.sampleTime <= LOW_MAX_AGE_SAMPLES;
 
-      this.publish(high, fresh ? this.lastLow!.result : null, attacking);
+      this.publish(high, fresh ? low.result : null, attacking);
     }
 
     // Keep the low branch's pending count from running away when the high
@@ -282,9 +282,9 @@ export class PitchEngine {
 
   private arbitrate(high: PitchResult, low: PitchResult | null): Choice | null {
     const highOk = high.voiced && high.frequency >= CROSSOVER_LOW_HZ;
-    if (highOk && low?.voiced) return this.reconcile(high, low);
+    if (highOk && low?.voiced === true) return this.reconcile(high, low);
     if (highOk) return { result: high, band: 'high' };
-    if (low?.voiced) return { result: low, band: 'low' };
+    if (low?.voiced === true) return { result: low, band: 'low' };
     return null;
   }
 

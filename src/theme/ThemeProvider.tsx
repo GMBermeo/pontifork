@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useMemo } from 'react';
-import { StyleSheet, TextStyle, ViewStyle } from 'react-native';
+import { StyleSheet, type TextStyle, type ViewStyle } from 'react-native';
 
 import { FACE } from './faces';
-import { ScaleInfo, useScale } from './scale';
-import { Chrome, CHROMES, ChromeName, RADIUS, TAP_TARGET, TRACKING } from './tokens';
+import { type ScaleInfo, useScale } from './scale';
+import { type Chrome, CHROMES, type ChromeName, RADIUS, TAP_TARGET, TRACKING } from './tokens';
 
 /**
  * Resolved theme: a chrome plus the design-unit → dp conversion for the
@@ -27,7 +27,7 @@ export interface Theme {
 
 const ThemeContext = createContext<Theme | null>(null);
 
-export function ThemeProvider({ chrome, children }: { chrome: ChromeName; children: React.ReactNode }) {
+export function ThemeProvider({ chrome, children }: Readonly<{ chrome: ChromeName; children: React.ReactNode }>) {
   const scale = useScale();
 
   const value = useMemo<Theme>(() => {

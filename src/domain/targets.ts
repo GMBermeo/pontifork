@@ -37,20 +37,23 @@ export interface TargetContext {
   current: number | null;
 }
 
-function distanceToString(frequency: number, context: TargetContext, index: number): number {
-  return Math.abs(centsBetween(frequency, midiToFrequency(context.notes[index], context.a4)));
+function distanceToNote(frequency: number, note: number, a4: number): number {
+  return Math.abs(centsBetween(frequency, midiToFrequency(note, a4)));
 }
 
-function isString(context: TargetContext, index: number | null): index is number {
-  return index !== null && index >= 0 && index < context.notes.length;
+/** String `index` of the tuning as a target, or null when the tuning has no such string. */
+function stringTarget(context: TargetContext, index: number | null): TunerTarget & { stringIndex: number } | null {
+  if (index === null) return null;
+  const midi = context.notes[index];
+  return midi === undefined ? null : { stringIndex: index, midi };
 }
 
 /** The string nearest to `frequency`, held on the current one unless another is clearly closer. */
 export function nearestString(frequency: number, context: TargetContext): number | null {
   let best: number | null = null;
   let bestDistance = Infinity;
-  for (let index = 0; index < context.notes.length; index++) {
-    const distance = distanceToString(frequency, context, index);
+  for (const [index, note] of context.notes.entries()) {
+    const distance = distanceToNote(frequency, note, context.a4);
     if (distance < bestDistance) {
       best = index;
       bestDistance = distance;
@@ -58,19 +61,17 @@ export function nearestString(frequency: number, context: TargetContext): number
   }
   if (best === null || bestDistance > STRING_CAPTURE_CENTS) return null;
 
-  if (isString(context, context.current) && context.current !== best) {
-    const held = distanceToString(frequency, context, context.current);
-    if (held <= STRING_CAPTURE_CENTS && held - bestDistance < STRING_SWITCH_MARGIN_CENTS) return context.current;
+  const held = stringTarget(context, context.current);
+  if (held && held.stringIndex !== best) {
+    const heldDistance = distanceToNote(frequency, held.midi, context.a4);
+    if (heldDistance <= STRING_CAPTURE_CENTS && heldDistance - bestDistance < STRING_SWITCH_MARGIN_CENTS) return held.stringIndex;
   }
   return best;
 }
 
 /** The note the display should measure `frequency` against. */
 export function resolveTarget(frequency: number, context: TargetContext): TunerTarget {
-  if (isString(context, context.locked)) {
-    return { stringIndex: context.locked, midi: context.notes[context.locked] };
-  }
-  const string = nearestString(frequency, context);
-  if (string !== null) return { stringIndex: string, midi: context.notes[string] };
-  return { stringIndex: null, midi: Math.round(frequencyToMidi(frequency, context.a4)) };
+  return stringTarget(context, context.locked)
+    ?? stringTarget(context, nearestString(frequency, context))
+    ?? { stringIndex: null, midi: Math.round(frequencyToMidi(frequency, context.a4)) };
 }

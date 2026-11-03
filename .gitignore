@@ -43,3 +43,6 @@ yarn-error.*
 
 # Personal Claude Code settings; the shared ones are in .claude/settings.json.
 .claude/settings.local.json
+
+# Release APKs (npm run apk)
+releases/

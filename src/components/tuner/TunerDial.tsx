@@ -50,14 +50,14 @@ function verdictLabel(reading: TunerReading, mic: MicSource): string {
   return direction === null ? 'IN TUNE' : DIRECTION_WORD[direction];
 }
 
-export type TunerDialProps = {
+export interface TunerDialProps {
   pitch: LivePitch;
   reading: TunerReading;
   session: TuningSession;
-};
+}
 
 /** The target note, the offset from it in cents, and a needle over a ±50 cent scale. */
-export function TunerDial({ pitch, reading, session }: TunerDialProps) {
+export function TunerDial({ pitch, reading, session }: Readonly<TunerDialProps>) {
   const theme = useTheme();
   const { chrome } = theme;
   const color = reading.voiced ? verdictColor(judgeTuning(reading.cents), chrome) : chrome.dim;

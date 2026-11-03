@@ -9,6 +9,7 @@
  */
 
 import { INSTRUMENTS, type InstrumentId } from './instruments';
+import { nonEmpty, type NonEmpty } from './lists';
 import { midiToFrequency, parseNote, type Spelling } from './pitch';
 
 export type TuningFamily = 'standard' | 'drop' | 'open' | 'alternate' | 'scordatura';
@@ -19,7 +20,7 @@ export interface Tuning {
   name: string;
   family: TuningFamily;
   /** Open-string MIDI notes, lowest string first. */
-  notes: readonly number[];
+  notes: NonEmpty<number>;
   spelling: Spelling;
   description: string;
 }
@@ -52,12 +53,12 @@ interface TuningSpec {
 }
 
 function tuning({ notes, spelling = 'sharps', ...rest }: TuningSpec): Tuning {
-  return { ...rest, spelling, notes: notes.split(/\s+/).map(parseNote) };
+  return { ...rest, spelling, notes: nonEmpty(notes.split(/\s+/).map(parseNote), `${rest.id}'s notes`) };
 }
 
 // ─── Cello ───────────────────────────────────────────────────────────────────
 
-const CELLO_4: readonly Tuning[] = [
+const CELLO_4: NonEmpty<Tuning> = [
   tuning({ id: 'standard', name: 'Standard', family: 'standard', notes: 'C2 G2 D3 A3', description: 'C G D A, in perfect fifths.' }),
   tuning({ id: 'half-step-down', name: 'Half step down', family: 'standard', notes: 'B1 F#2 C#3 G#3', description: 'Every string a semitone low, for playing with bands tuned to E♭.' }),
   tuning({ id: 'bach-suite-5', name: 'Bach Suite No. 5', family: 'scordatura', notes: 'C2 G2 D3 G3', description: 'The A string down to G, as Bach wrote it for the C minor suite.' }),
@@ -66,7 +67,7 @@ const CELLO_4: readonly Tuning[] = [
 
 // ─── Guitar ──────────────────────────────────────────────────────────────────
 
-const GUITAR_6: readonly Tuning[] = [
+const GUITAR_6: NonEmpty<Tuning> = [
   tuning({ id: 'standard', name: 'Standard', family: 'standard', notes: 'E2 A2 D3 G3 B3 E4', description: 'E A D G B E. What nearly everything for guitar is written in.' }),
   tuning({ id: 'half-step-down', name: 'Half step down', family: 'standard', notes: 'Eb2 Ab2 Db3 Gb3 Bb3 Eb4', spelling: 'flats', description: 'E♭ standard. Every string a semitone low.' }),
   tuning({ id: 'whole-step-down', name: 'Whole step down', family: 'standard', notes: 'D2 G2 C3 F3 A3 D4', description: 'D standard. Every string a whole tone low.' }),
@@ -89,7 +90,7 @@ const GUITAR_6: readonly Tuning[] = [
   tuning({ id: 'dadgad', name: 'DADGAD', family: 'alternate', notes: 'D2 A2 D3 G3 A3 D4', description: 'A suspended, modal tuning from Celtic and acoustic guitar.' }),
 ];
 
-const GUITAR_7: readonly Tuning[] = [
+const GUITAR_7: NonEmpty<Tuning> = [
   tuning({ id: 'standard', name: 'Standard', family: 'standard', notes: 'B1 E2 A2 D3 G3 B3 E4', description: 'B E A D G B E: six-string standard under a low B.' }),
   tuning({ id: 'half-step-down', name: 'Half step down', family: 'standard', notes: 'Bb1 Eb2 Ab2 Db3 Gb3 Bb3 Eb4', spelling: 'flats', description: 'B♭ standard. Every string a semitone low.' }),
   tuning({ id: 'whole-step-down', name: 'Whole step down', family: 'standard', notes: 'A1 D2 G2 C3 F3 A3 D4', description: 'A standard. Every string a whole tone low.' }),
@@ -101,7 +102,7 @@ const GUITAR_7: readonly Tuning[] = [
 
 // ─── Bass ────────────────────────────────────────────────────────────────────
 
-const BASS_4: readonly Tuning[] = [
+const BASS_4: NonEmpty<Tuning> = [
   tuning({ id: 'standard', name: 'Standard', family: 'standard', notes: 'E1 A1 D2 G2', description: 'E A D G, an octave below the guitar\'s four lowest strings.' }),
   tuning({ id: 'half-step-down', name: 'Half step down', family: 'standard', notes: 'Eb1 Ab1 Db2 Gb2', spelling: 'flats', description: 'E♭ standard. Every string a semitone low.' }),
   tuning({ id: 'whole-step-down', name: 'Whole step down', family: 'standard', notes: 'D1 G1 C2 F2', description: 'D standard. Every string a whole tone low.' }),
@@ -117,7 +118,7 @@ const BASS_4: readonly Tuning[] = [
   tuning({ id: 'tenor', name: 'Tenor (ADGC)', family: 'alternate', notes: 'A1 D2 G2 C3', description: 'Every string a fourth up, for chords and solos.' }),
 ];
 
-const BASS_5: readonly Tuning[] = [
+const BASS_5: NonEmpty<Tuning> = [
   tuning({ id: 'standard', name: 'Standard', family: 'standard', notes: 'B0 E1 A1 D2 G2', description: 'B E A D G: four-string standard over a low B.' }),
   tuning({ id: 'half-step-down', name: 'Half step down', family: 'standard', notes: 'Bb0 Eb1 Ab1 Db2 Gb2', spelling: 'flats', description: 'Every string a semitone low.' }),
   tuning({ id: 'whole-step-down', name: 'Whole step down', family: 'standard', notes: 'A0 D1 G1 C2 F2', description: 'Every string a whole tone low.' }),
@@ -125,7 +126,7 @@ const BASS_5: readonly Tuning[] = [
   tuning({ id: 'high-c', name: 'High C (EADGC)', family: 'alternate', notes: 'E1 A1 D2 G2 C3', description: 'Four-string standard with a high C in place of the low B.' }),
 ];
 
-const BASS_6: readonly Tuning[] = [
+const BASS_6: NonEmpty<Tuning> = [
   tuning({ id: 'standard', name: 'Standard', family: 'standard', notes: 'B0 E1 A1 D2 G2 C3', description: 'B E A D G C: a low B and a high C.' }),
   tuning({ id: 'half-step-down', name: 'Half step down', family: 'standard', notes: 'Bb0 Eb1 Ab1 Db2 Gb2 B2', spelling: 'flats', description: 'Every string a semitone low.' }),
   tuning({ id: 'whole-step-down', name: 'Whole step down', family: 'standard', notes: 'A0 D1 G1 C2 F2 Bb2', spelling: 'flats', description: 'Every string a whole tone low.' }),
@@ -134,7 +135,7 @@ const BASS_6: readonly Tuning[] = [
 
 // ─── Lookup ──────────────────────────────────────────────────────────────────
 
-const CATALOGUE: Partial<Record<SetupKey, readonly Tuning[]>> = {
+const CATALOGUE: Partial<Record<SetupKey, NonEmpty<Tuning>>> = {
   'cello-4': CELLO_4,
   'guitar-6': GUITAR_6,
   'guitar-7': GUITAR_7,
@@ -144,7 +145,7 @@ const CATALOGUE: Partial<Record<SetupKey, readonly Tuning[]>> = {
 };
 
 /** Every tuning for an instrument strung with `strings` strings, standard first. */
-export function tuningsFor(instrument: InstrumentId, strings: number): readonly Tuning[] {
+export function tuningsFor(instrument: InstrumentId, strings: number): NonEmpty<Tuning> {
   const tunings = CATALOGUE[setupKey(instrument, strings)];
   if (!tunings) throw new Error(`no tunings for a ${strings}-string ${instrument}`);
   return tunings;

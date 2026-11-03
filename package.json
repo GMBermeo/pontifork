@@ -1,24 +1,27 @@
 {
   "name": "pontifork",
   "main": "expo-router/entry",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "type": "module",
   "private": true,
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "build:web": "expo export --platform web && node tools/bundle-docs.mjs",
+    "build:web": "expo export --platform web",
     "lint": "eslint . --max-warnings=0",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "verify": "npm run typecheck && npm run lint && npm test && npm run check:site",
     "icons": "python3 tools/make-icons.py",
-    "capture:shots": "node tools/capture-site-shots.mjs",
-    "check:site": "node tools/check-site.mjs",
-    "preview:web": "node tools/serve-web.mjs",
-    "site:tunings": "WRITE_SITE_TUNINGS=1 vitest run src/domain/__tests__/site.test.ts"
+    "capture:shots": "node tools/capture-site-shots.mts",
+    "check:site": "node tools/check-site.mts",
+    "preview:web": "node tools/serve-web.mts app",
+    "preview:site": "node tools/serve-web.mts site",
+    "site:tunings": "WRITE_SITE_TUNINGS=1 vitest run src/domain/__tests__/site.test.ts",
+    "apk": "bash tools/build-apk.sh"
   },
   "dependencies": {
     "@expo-google-fonts/archivo": "^0.4.2",
@@ -27,6 +30,7 @@
     "expo-asset": "~58.0.19",
     "expo-audio": "~58.0.11",
     "expo-constants": "~58.0.14",
+    "expo-file-system": "~58.0.13",
     "expo-font": "~58.0.11",
     "expo-haptics": "~58.0.7",
     "expo-keep-awake": "~58.0.3",
@@ -42,17 +46,20 @@
     "react-native-reanimated": "4.7.1",
     "react-native-safe-area-context": "~5.10.1",
     "react-native-screens": "~4.30.1",
+    "react-native-svg": "15.16.0",
     "react-native-web": "~0.21.0",
     "react-native-worklets": "0.13.0"
   },
   "devDependencies": {
     "@resvg/resvg-js": "^2.6.2",
+    "@types/node": "^24.19.2",
     "@types/react": "~19.3.0",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~58.0.0",
     "eslint-plugin-sonarjs": "^4.2.1",
     "puppeteer-core": "^24.43.1",
     "typescript": "~6.0.3",
+    "typescript-eslint": "^8.72.1",
     "vitest": "^3.2.7"
   }
 }

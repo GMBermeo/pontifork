@@ -56,7 +56,7 @@ describe('the product site', () => {
     expect(listedOnPage(readFileSync(PAGE, 'utf8'))).toBe(renderCatalogue());
   });
 
-  it.runIf(process.env.WRITE_SITE_TUNINGS === '1')('rewrites the list from the catalogue', () => {
+  it.runIf(process.env['WRITE_SITE_TUNINGS'] === '1')('rewrites the list from the catalogue', () => {
     const page = readFileSync(PAGE, 'utf8');
     const listed = listedOnPage(page);
     writeFileSync(PAGE, page.replace(`${START}${listed}${END}`, `${START}${renderCatalogue()}${END}`));

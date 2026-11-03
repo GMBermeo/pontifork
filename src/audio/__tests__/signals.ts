@@ -5,7 +5,7 @@
  */
 
 export interface ToneOptions {
-  sampleRate?: number;
+  sampleRate?: number | undefined;
   seconds?: number;
   /** Amplitude of each harmonic, fundamental first. */
   harmonics?: readonly number[];

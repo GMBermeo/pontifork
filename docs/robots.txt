@@ -1,0 +1,5 @@
+# Pontifork's product site. Everything here is public.
+User-agent: *
+Allow: /
+
+Sitemap: https://pontifork.bermeo.dev/sitemap.xml

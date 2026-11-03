@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+  <url>
+    <loc>https://pontifork.bermeo.dev/</loc>
+    <lastmod>2026-11-03</lastmod>
+    <image:image>
+      <image:loc>https://pontifork.bermeo.dev/assets/screenshots/tuner-guitar.webp</image:loc>
+      <image:caption>Guitar in standard tuning: the D string nine cents flat, Tune up.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://pontifork.bermeo.dev/assets/screenshots/tuner-cello-dark.webp</image:loc>
+      <image:caption>Cello in the dark theme: the A string in tune, all four strings ticked.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://pontifork.bermeo.dev/assets/screenshots/tuner-bass.webp</image:loc>
+      <image:caption>Five-string bass: the low B fourteen cents flat.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://pontifork.bermeo.dev/assets/screenshots/drop-d.webp</image:loc>
+      <image:caption>Drop D selected while the low string still sounds E: Tune down.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://pontifork.bermeo.dev/assets/screenshots/tunings.webp</image:loc>
+      <image:caption>The tuning list for six-string guitar, grouped by family.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://pontifork.bermeo.dev/assets/screenshots/locked-seven.webp</image:loc>
+      <image:caption>Seven-string guitar in drop A, locked to string seven.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://pontifork.bermeo.dev/assets/screenshots/reference.webp</image:loc>
+      <image:caption>Tuning against a reference of A equals 442 hertz.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://pontifork.bermeo.dev/assets/screenshots/chords-shapes.webp</image:loc>
+      <image:caption>The chord book a half step down, with a saved sequence below.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://pontifork.bermeo.dev/assets/screenshots/chords-detail.webp</image:loc>
+      <image:caption>B a half step down: the C shape, its fingers and its notes.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://pontifork.bermeo.dev/assets/screenshots/chords-key.webp</image:loc>
+      <image:caption>The chords of G major in degree order.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://pontifork.bermeo.dev/assets/screenshots/sequence-play.webp</image:loc>
+      <image:caption>A chord sequence playing through, now and next.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://pontifork.bermeo.dev/assets/screenshots/desktop.webp</image:loc>
+      <image:caption>The web app in a wide window, tuning a guitar.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://pontifork.bermeo.dev/assets/screenshots/desktop-dark.webp</image:loc>
+      <image:caption>The web app in the dark theme, tuning a bass to drop D.</image:caption>
+    </image:image>
+    <video:video>
+      <video:thumbnail_loc>https://pontifork.bermeo.dev/assets/screenshots/tuner-guitar.webp</video:thumbnail_loc>
+      <video:title>Tuning a guitar with Pontifork</video:title>
+      <video:description>Tuning a guitar from the low E up in the Pontifork web app: each string glides in from off pitch, the needle settles in the green, and the string gets a tick.</video:description>
+      <video:content_loc>https://pontifork.bermeo.dev/assets/video/tour.mp4</video:content_loc>
+      <video:family_friendly>yes</video:family_friendly>
+    </video:video>
+  </url>
+</urlset>

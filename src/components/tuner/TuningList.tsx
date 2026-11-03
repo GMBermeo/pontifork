@@ -6,7 +6,7 @@ import { useTheme } from '@theme';
 import { Body, Card, Icon, Label, Num, PressableRow, Row, Rule, Stack, Title } from '../ui';
 import { tuningLetters } from './Setup';
 
-function TuningRow({ tuning, selected, onPick }: { tuning: Tuning; selected: boolean; onPick: (id: string) => void }) {
+function TuningRow({ tuning, selected, onPick }: Readonly<{ tuning: Tuning; selected: boolean; onPick: (id: string) => void }>) {
   const theme = useTheme();
   return (
     <PressableRow onPress={() => onPick(tuning.id)} selected={selected}
@@ -28,11 +28,11 @@ function TuningRow({ tuning, selected, onPick }: { tuning: Tuning; selected: boo
 }
 
 /** Every tuning for the current setup, grouped by family. */
-export function TuningList({ tunings, selectedId, onPick }: {
+export function TuningList({ tunings, selectedId, onPick }: Readonly<{
   tunings: readonly Tuning[];
   selectedId: string;
   onPick: (id: string) => void;
-}) {
+}>) {
   const theme = useTheme();
   return (
     <Stack gap={18}>

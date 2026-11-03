@@ -8,9 +8,12 @@ import { useEffect } from 'react';
 import { Platform, useColorScheme } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { PageMetaProvider } from '@components';
 import { ThemeProvider, useTheme } from '@theme';
 
-SplashScreen.preventAutoHideAsync().catch(() => {});
+SplashScreen.preventAutoHideAsync().catch(() => {
+  // No splash to hold (the web, or it is already gone): the app simply shows.
+});
 
 function Navigator() {
   const theme = useTheme();
@@ -24,8 +27,10 @@ function Navigator() {
     <>
       <StatusBar style={dark ? 'light' : 'dark'} />
       <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: theme.chrome.bg } }}>
-        <Stack.Screen name="index" />
+        <Stack.Screen name="(tabs)" />
         <Stack.Screen name="tunings" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="sequences" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="sequence" options={{ presentation: 'modal' }} />
       </Stack>
     </>
   );
@@ -38,16 +43,22 @@ export default function RootLayout() {
   const scheme = useColorScheme();
 
   useEffect(() => {
-    if (fontsLoaded || fontError) SplashScreen.hideAsync().catch(() => {});
+    if (fontsLoaded || fontError) {
+      SplashScreen.hideAsync().catch(() => {
+        // Already hidden: nothing to do.
+      });
+    }
   }, [fontsLoaded, fontError]);
 
   if (!fontsLoaded && !fontError) return null;
 
   return (
-    <SafeAreaProvider>
-      <ThemeProvider chrome={scheme === 'dark' ? 'quiet' : 'paper'}>
-        <Navigator />
-      </ThemeProvider>
-    </SafeAreaProvider>
+    <PageMetaProvider>
+      <SafeAreaProvider>
+        <ThemeProvider chrome={scheme === 'dark' ? 'quiet' : 'paper'}>
+          <Navigator />
+        </ThemeProvider>
+      </SafeAreaProvider>
+    </PageMetaProvider>
   );
 }

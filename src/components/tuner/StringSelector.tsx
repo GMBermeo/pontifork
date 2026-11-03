@@ -6,7 +6,7 @@ import { RADIUS, useTheme, type Chrome } from '@theme';
 import { Body, Button, Grow, Icon, Label, Num, Row, Stack, Title, useControlFeedback } from '../ui';
 import type { TuningSession } from './session';
 
-type PegState = { active: boolean; locked: boolean; tuned: boolean };
+interface PegState { active: boolean; locked: boolean; tuned: boolean }
 
 function pegColors(state: PegState, chrome: Chrome) {
   if (state.locked) return { background: chrome.accent, ink: chrome.onAccent, border: chrome.accent };
@@ -17,11 +17,10 @@ function pegColors(state: PegState, chrome: Chrome) {
   };
 }
 
-function Peg({ index, state, session }: { index: number; state: PegState; session: TuningSession }) {
+function Peg({ index, midi, state, session }: Readonly<{ index: number; midi: number; state: PegState; session: TuningSession }>) {
   const theme = useTheme();
   const feedback = useControlFeedback();
   const { tuning, instrument } = session;
-  const midi = tuning.notes[index];
   const numeral = stringNumeral(instrument, index, tuning.notes.length);
   const colors = pegColors(state, theme.chrome);
   const description = [`String ${numeral}, ${noteName(midi, tuning.spelling)}`];
@@ -59,7 +58,7 @@ function Peg({ index, state, session }: { index: number; state: PegState; sessio
  * tuner to it — for bringing a string a long way, where the nearest-string
  * guess would pick its neighbour.
  */
-export function StringSelector({ session, activeString }: { session: TuningSession; activeString: number | null }) {
+export function StringSelector({ session, activeString }: Readonly<{ session: TuningSession; activeString: number | null }>) {
   const theme = useTheme();
   const { lockedString, tuning, instrument } = session;
   const hint = lockedString === null
@@ -76,8 +75,8 @@ export function StringSelector({ session, activeString }: { session: TuningSessi
           : <Button label="Auto" tone="ghost" onPress={() => session.lockString(null)} accessibilityLabel="Follow whichever string is played" style={{ minHeight: theme.s(32), paddingVertical: 0 }} />}
       </Row>
       <View style={{ flexDirection: 'row', gap: theme.s(6) }}>
-        {tuning.notes.map((_, index) => (
-          <Peg key={index} index={index} session={session} state={{
+        {tuning.notes.map((midi, index) => (
+          <Peg key={index} index={index} midi={midi} session={session} state={{
             active: activeString === index,
             locked: lockedString === index,
             tuned: session.tunedStrings.has(index),

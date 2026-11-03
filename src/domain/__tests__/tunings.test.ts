@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { INSTRUMENT_ORDER, INSTRUMENTS, stringNumeral, validStringCount, type InstrumentId } from '../instruments';
+import { itemAt } from '../lists';
 import { midiToFrequency, noteLetter, toPitchClass } from '../pitch';
 import { detectionFloorHz, findTuning, groupByFamily, tuningsFor, type Tuning } from '../tunings';
 
@@ -14,7 +15,7 @@ function byId(instrument: InstrumentId, strings: number, id: string): Tuning {
 }
 
 const shifted = (notes: readonly number[], semitones: number) => notes.map((n) => n + semitones);
-const dropped = (notes: readonly number[]) => [notes[0] - 2, ...notes.slice(1)];
+const dropped = (notes: readonly number[]) => [itemAt(notes, 0) - 2, ...notes.slice(1)];
 
 describe('tuning catalogue shape', () => {
   it.each(SETUPS)('$instrument with $strings strings: one note per string, low to high, unique ids', ({ instrument, strings }) => {
@@ -22,7 +23,7 @@ describe('tuning catalogue shape', () => {
     expect(new Set(tunings.map((t) => t.id)).size).toBe(tunings.length);
     for (const t of tunings) {
       expect(t.notes, t.id).toHaveLength(strings);
-      t.notes.slice(1).forEach((note, i) => expect(note, t.id).toBeGreaterThan(t.notes[i]));
+      t.notes.slice(1).forEach((note, i) => expect(note, t.id).toBeGreaterThan(itemAt(t.notes, i)));
     }
   });
 
@@ -42,14 +43,15 @@ describe('tuning catalogue shape', () => {
 });
 
 describe('tunings keep the promises in their names', () => {
-  const LOWERED: Record<string, number> = {
+  const LOWERED: Readonly<Record<string, number>> = {
     'half-step-down': 1, 'whole-step-down': 2, 'c-sharp-standard': 3, 'c-standard': 4, 'b-standard': 5,
   };
 
   it.each(SETUPS)('lowered standards on a $strings-string $instrument', ({ instrument, strings }) => {
     const standard = byId(instrument, strings, 'standard').notes;
-    for (const t of tuningsFor(instrument, strings).filter((x) => x.id in LOWERED)) {
-      expect(t.notes, t.id).toEqual(shifted(standard, -LOWERED[t.id]));
+    for (const t of tuningsFor(instrument, strings)) {
+      const semitones = LOWERED[t.id];
+      if (semitones !== undefined) expect(t.notes, t.id).toEqual(shifted(standard, -semitones));
     }
   });
 
@@ -57,7 +59,7 @@ describe('tunings keep the promises in their names', () => {
     const standard = byId(instrument, strings, 'standard').notes;
     const drops = tuningsFor(instrument, strings).filter((t) => t.family === 'drop' && t.id !== 'double-drop-d');
     for (const t of drops) {
-      const semitonesDown = standard[1] - t.notes[1];
+      const semitonesDown = itemAt(standard, 1) - itemAt(t.notes, 1);
       expect(t.notes, t.id).toEqual(dropped(shifted(standard, -semitonesDown)));
       const lowest = [noteLetter(t.notes[0], 'sharps'), noteLetter(t.notes[0], 'flats')];
       expect(lowest.some((name) => t.name.includes(name)), `${t.name} names its low string`).toBe(true);
@@ -71,7 +73,7 @@ describe('tunings keep the promises in their names', () => {
 
   it('double drop D lowers both E strings', () => {
     const standard = byId('guitar', 6, 'standard').notes;
-    expect(byId('guitar', 6, 'double-drop-d').notes).toEqual([standard[0] - 2, ...standard.slice(1, 5), standard[5] - 2]);
+    expect(byId('guitar', 6, 'double-drop-d').notes).toEqual([standard[0] - 2, ...standard.slice(1, 5), itemAt(standard, 5) - 2]);
   });
 
   const OPEN_CHORDS: [string, number, number][] = [

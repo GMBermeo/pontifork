@@ -28,6 +28,7 @@ export interface FluxOptions {
 }
 
 export class SpectralFluxGate {
+  private readonly sampleRate: number;
   private readonly fft: FFT;
   private readonly re: Float32Array;
   private readonly im: Float32Array;
@@ -49,7 +50,8 @@ export class SpectralFluxGate {
   /** Flux of the most recent frame, for the debug overlay. */
   lastFlux = 0;
 
-  constructor(private readonly sampleRate: number, options: FluxOptions = {}) {
+  constructor(sampleRate: number, options: FluxOptions = {}) {
+    this.sampleRate = sampleRate;
     const { fftSize = 512, thresholdRatio = 2.4, holdMs = 35, refractoryMs = 150 } = options;
     this.fft = new FFT(fftSize);
     this.re = new Float32Array(fftSize);
@@ -73,15 +75,15 @@ export class SpectralFluxGate {
   push(frame: Float32Array, hopSizeSamples: number): boolean {
     const n = this.fft.size;
     for (let i = 0; i < n; i++) {
-      this.re[i] = frame[i] * this.window[i];
+      this.re[i] = frame[i]! * this.window[i]!;
       this.im[i] = 0;
     }
     this.fft.forward(this.re, this.im);
 
     let flux = 0;
     for (let k = 0; k < n / 2; k++) {
-      const magnitude = Math.hypot(this.re[k], this.im[k]);
-      const delta = magnitude - this.previousMagnitude[k];
+      const magnitude = Math.hypot(this.re[k]!, this.im[k]!);
+      const delta = magnitude - this.previousMagnitude[k]!;
       if (delta > 0) flux += delta;
       this.previousMagnitude[k] = magnitude;
     }
@@ -121,7 +123,7 @@ export class SpectralFluxGate {
   private median(): number {
     if (this.historyFilled === 0) return 0;
     const slice = Array.from(this.history.subarray(0, this.historyFilled)).sort((a, b) => a - b);
-    return slice[slice.length >> 1];
+    return slice[slice.length >> 1] ?? 0;
   }
 
   reset(): void {

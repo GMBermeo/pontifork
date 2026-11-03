@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, StyleProp, View, ViewStyle } from 'react-native';
+import { Platform, type StyleProp, View, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme } from '@theme';
@@ -11,7 +11,7 @@ import { Body, Title } from './primitives';
  * insets. The top inset belongs to the header and the bottom one to whatever
  * scrolls, so neither is applied here.
  */
-export function Screen({ children, style }: { children: React.ReactNode; style?: StyleProp<ViewStyle> }) {
+export function Screen({ children, style }: Readonly<{ children: React.ReactNode; style?: StyleProp<ViewStyle> }>) {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   return (
@@ -28,12 +28,12 @@ export function Screen({ children, style }: { children: React.ReactNode; style?:
  */
 export function ScreenHeader({
   title, subtitle, children, inset = true,
-}: {
+}: Readonly<{
   title: string;
   subtitle?: string;
   children?: React.ReactNode;
   inset?: boolean;
-}) {
+}>) {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const breathing = theme.s(Platform.OS === 'web' ? 18 : 6);

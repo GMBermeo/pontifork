@@ -23,8 +23,13 @@ class ScriptedSource implements FrameSource {
     };
   }
 
-  reconfigure(): void {}
-  reset(): void {}
+  reconfigure(): void {
+    // A scripted source has nothing to reconfigure.
+  }
+
+  reset(): void {
+    // Nor anything to forget.
+  }
 }
 
 const GUITAR = [40, 45, 50, 55, 59, 64];
@@ -92,7 +97,7 @@ describe('TunerTracker', () => {
       for (let t = 0; t < ms; t += FRAME_MS) {
         now += FRAME_MS;
         const { reading } = tracker.push(BLOCK, now);
-        if (!reading?.voiced || reading.targetMidi === null) continue;
+        if (reading?.voiced !== true || reading.targetMidi === null) continue;
         const truth = centsBetween(reading.frequency, midiToFrequency(reading.targetMidi));
         if (Math.abs(reading.cents - truth) > 0.01) mismatches.push(`${now}ms: ${reading.cents} vs ${truth}`);
       }

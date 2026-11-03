@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router';
 import { Platform, ScrollView } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Button, Screen, ScreenHeader, TuningList } from '@components';
+import { Button, PageMeta, Screen, ScreenHeader, TuningList } from '@components';
 import { INSTRUMENTS, tuningsFor } from '@domain';
 import { settingsActions, useInstrument, useStringCount, useTuning } from '@state';
 import { useTheme } from '@theme';
@@ -25,6 +25,9 @@ export default function TuningsScreen() {
 
   return (
     <Screen>
+      {/* It lists the tunings of whichever instrument is in use: not a page to index. */}
+      <PageMeta path="/tunings" title="Tunings · Pontifork" indexed={false}
+        description="Every standard, drop, open and alternate tuning for the instrument in use, with the notes of each open string." />
       {/* An iOS modal is a sheet below the status bar; elsewhere it fills the window. */}
       <ScreenHeader title="Tunings" subtitle={setup} inset={Platform.OS !== 'ios'}>
         <Button label="Done" tone="ghost" onPress={close} />

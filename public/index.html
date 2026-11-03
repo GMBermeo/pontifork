@@ -5,8 +5,18 @@
     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
     <!-- viewport-fit=cover: the app pads itself with the safe-area insets, so it can draw under a notch. -->
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>%WEB_TITLE% — tuner for cello, guitar and bass</title>
-    <meta name="description" content="A free tuner for cello, guitar and bass in your browser: every standard, drop, open and lowered tuning, measured against the string you are tuning. Nothing is recorded and nothing leaves the device." />
+    <!--
+      Search and link previews. The web app is a single page, so this head is
+      what every crawler and chat preview sees first. Tags marked data-rh are
+      the per-page ones: each route's PageMeta (components/ui/PageMeta.web.tsx)
+      replaces them with its own title, description and canonical address, so
+      there is no canonical here to contradict it.
+    -->
+    <title>%WEB_TITLE% — online tuner for cello, guitar and bass</title>
+    <meta data-rh="true" name="description" content="Tune a cello, guitar or bass in your browser, in any of 53 standard, drop and open tunings, against the string you play. Free; nothing leaves your device." />
+    <meta data-rh="true" name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="author" content="Guilherme Yuri Bermeo" />
+    <meta name="application-name" content="Pontifork" />
     <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0B0A14" media="(prefers-color-scheme: dark)" />
@@ -20,11 +30,56 @@
     <meta name="apple-mobile-web-app-title" content="Pontifork" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
-    <meta property="og:title" content="Pontifork — every string, in tune" />
-    <meta property="og:description" content="A tuner for cello, guitar and bass, with every common standard, drop, open and lowered tuning. Free and open source." />
-    <meta property="og:image" content="/og-image.png" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Pontifork" />
+    <meta property="og:locale" content="en_US" />
+    <meta data-rh="true" property="og:url" content="https://pontifork-online.bermeo.dev/" />
+    <meta data-rh="true" property="og:title" content="Pontifork — online tuner for cello, guitar and bass" />
+    <meta data-rh="true" property="og:description" content="Tune a cello, guitar or bass in your browser, in any of 53 standard, drop and open tunings, against the string you play. Free; nothing leaves your device." />
+    <meta property="og:image" content="https://pontifork-online.bermeo.dev/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Pontifork, every string in tune: the tuner on three phones, with the tuning list, a guitar string nine cents flat, and a cello in tune in the dark theme." />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta data-rh="true" name="twitter:title" content="Pontifork — online tuner for cello, guitar and bass" />
+    <meta data-rh="true" name="twitter:description" content="Tune a cello, guitar or bass in your browser, in any of 53 standard, drop and open tunings, against the string you play. Free; nothing leaves your device." />
+    <meta name="twitter:image" content="https://pontifork-online.bermeo.dev/og-image.png" />
+    <meta name="twitter:image:alt" content="Pontifork, every string in tune: the tuner on three phones, with the tuning list, a guitar string nine cents flat, and a cello in tune in the dark theme." />
+
+    <!-- What the page is, for search engines: https://schema.org/WebApplication -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "@id": "https://pontifork-online.bermeo.dev/#app",
+        "name": "Pontifork",
+        "alternateName": "Pontifork online tuner",
+        "url": "https://pontifork-online.bermeo.dev/",
+        "description": "A tuner and chord book for cello, guitar (6 and 7 strings) and bass (4, 5 and 6 strings), with 53 standard, drop, open and lowered tunings and 120 chords whose shapes follow the tuning.",
+        "applicationCategory": "MultimediaApplication",
+        "applicationSubCategory": "Instrument tuner",
+        "operatingSystem": "Any, in a web browser",
+        "browserRequirements": "Requires JavaScript and microphone access.",
+        "inLanguage": "en",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "image": "https://pontifork-online.bermeo.dev/og-image.png",
+        "screenshot": "https://pontifork-online.bermeo.dev/og-image.png",
+        "featureList": [
+          "Tunes cello, guitar with 6 or 7 strings, and bass with 4, 5 or 6 strings",
+          "53 standard, lowered, drop, open and alternate tunings",
+          "Reference pitch from 415 to 466 Hz",
+          "Chord book of 120 chords whose shapes follow the tuning and capo",
+          "Saved chord sequences",
+          "Listens on the device: nothing is recorded or sent"
+        ],
+        "softwareVersion": "1.1.0",
+        "license": "https://opensource.org/licenses/MIT",
+        "author": { "@type": "Person", "name": "Guilherme Yuri Bermeo", "url": "https://gm.bermeo.dev" },
+        "sameAs": ["https://pontifork.bermeo.dev/", "https://github.com/GMBermeo/pontifork"]
+      }
+    </script>
 
     <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
     <style id="expo-reset">
@@ -52,7 +107,11 @@
   </head>
 
   <body>
-    <noscript>Pontifork needs JavaScript to listen to your instrument.</noscript>
+    <noscript>
+      <h1>Pontifork, a tuner for cello, guitar and bass</h1>
+      <p>Pontifork needs JavaScript to listen to your instrument. Turn it on, or read about the tuner and its
+        chord book at <a href="https://pontifork.bermeo.dev/">pontifork.bermeo.dev</a>.</p>
+    </noscript>
     <div id="root"></div>
   </body>
 </html>

@@ -34,6 +34,34 @@ the narrow hooks in `src/state/settings.ts` (`useInstrument`,
 `useStringCount`, `useTuning`, `useA4`) and written through
 `settingsActions`. There is deliberately no whole-object hook.
 
+## Strict types
+
+`tsconfig.json` turns on everything TypeScript offers short of
+`isolatedDeclarations`: `strict`, `noUncheckedIndexedAccess`,
+`exactOptionalPropertyTypes`, `noPropertyAccessFromIndexSignature`,
+`noImplicitReturns`, `verbatimModuleSyntax`, `erasableSyntaxOnly` and the
+unused/unreachable checks. ESLint adds typescript-eslint's
+`strictTypeChecked` and `stylisticTypeChecked`, `strict-boolean-expressions`
+and an exhaustive-`switch` check. What that means day to day:
+
+- **An index may miss.** `list[i]` is `T | undefined`. Say what you know:
+  `itemAt(list, i)` (`domain/lists.ts`) throws when the index is wrong;
+  `NonEmpty<T>` types a list that always has a first item (a tuning's notes,
+  an instrument's string counts, a catalogue); `ByPitchClass<T>` is a
+  12-tuple indexed by `PitchClass`, and `Letter` indexes the seven letters.
+- **The DSP kernels are the exception.** `fft.ts`, `mpm.ts`, `decimate.ts`,
+  `flux.ts`, `chordSynth.ts` and `sources/types.ts` index typed arrays with
+  `!` inside loops bounded by those arrays: a `?? 0` per sample would cost a
+  branch on the audio thread. Nowhere else.
+- **Stored data is `unknown` until checked.** Sanitizers read a stored copy
+  as `Stored<T>` (`state/stored.ts`): every field optional and `unknown`.
+- **Optional means absent, not `undefined`.** Leave a property out (spread
+  `...(x === undefined ? {} : { x })`) rather than passing `undefined`, or
+  declare it `?: T | undefined` when undefined is a real value.
+- **Props are `Readonly<…>`**; type-only imports are `import { type X }`; no
+  enums, namespaces or parameter properties (`erasableSyntaxOnly`), so the
+  `tools/*.mts` scripts run in Node 24 without a build step.
+
 ## How a reading is made
 
 ```
@@ -67,6 +95,53 @@ against a chart. `tunings.test.ts` checks the promises the names make (every
 standard with its low string down a tone, every open tuning rings its chord).
 A tuning `id` is stored in settings: never rename one. To add a tuning, add a
 line to the right setup and run the tests.
+
+## The chord book
+
+The Chords tab (`src/app/(tabs)/chords.tsx`, built from `src/components/chords/`)
+lists 120 chords (12 roots × the 10 types in `domain/chords/chordTypes.ts`)
+for whatever instrument, tuning and capo are in use. It shares the tuner's
+settings: there is no second tuning.
+
+- **Shapes follow the tuning** (`domain/chords/book.ts`, `tuningRelation`).
+  Every string moved by the same amount (half step down, C standard, a capo,
+  bass tenor): the standard shapes, renamed by the shift, so B's page in half
+  step down shows the C shape and labels it. Drop tunings: the same shapes with
+  the lowest string fretted two higher (or left out), plus the one-finger
+  power chord. Anything else (open tunings, DADGAD, double drop D, the cello's
+  scordaturas): shapes found by search for that tuning.
+- **Guitar shapes are written out by hand** (`guitarShapes.ts`): the open
+  chords and the E and A shape barres, with a teacher's fingering. A seven-
+  string adds the E shape on strings 7–4. Bass and cello shapes come from
+  `search.ts` (the cello's hand frames are Ponticello's). `chords.test.ts`
+  checks that every shape in every tuning sounds its chord within one hand.
+- **The book lists chords by how they sound**; the shape's own name is the
+  small label. Roots are spelt as a chart spells them (`spelling.ts`), the
+  tuning breaking F♯/G♭-style ties; notes are spelt from the root's letter.
+- **Keys** (`keys.ts`): a key opens its own page in degree order and puts its
+  chords first on every other page. Minor keys include the major V.
+- **Diagrams** are geometry first (`diagram.ts`, tested in Node) and drawn by
+  `components/chords/ChordDiagram.tsx` with `react-native-svg`.
+- **Sequences** (`state/sequencesModel.ts`, persisted by `state/sequences.ts`)
+  keep chords by sound, the shape picked, and the setup they were made for.
+  Play-through is silent by design: it shows the changes every
+  `PLAY_THROUGH_MS`.
+- **Sound** (`audio/chordSynth.ts`): Karplus–Strong plucks with an all-pass
+  tuning correction, and an additive bowed tone for the cello, at the
+  tuner's A4. `chordSynth.test.ts` measures the pitch it plays. Playback is
+  per platform (`audio/playback/playSamples.{web,native}.ts`): Web Audio in a
+  browser; on iOS and Android a WAV in the cache played by expo-audio, which
+  cannot play raw samples.
+
+### Tabs
+
+`src/app/(tabs)/_layout.tsx` is the system tab bar (`expo-router/native-tabs`).
+In a browser that component draws a floating pill over the page, so
+`_layout.web.tsx` builds a bottom bar from `expo-router/ui`'s headless tabs;
+its `TabSlot` must be allowed to shrink or every page grows past the window.
+Content pinned to the bottom of a tab pads by `useTabBarInset()`: iOS gives
+each tab its own safe area including the floating bar; Android and the web
+already sit above theirs.
 
 ## Sizes are design units, not pixels
 
@@ -125,19 +200,49 @@ file. See `assets/logo/README.md`.
 
 ## The web app and the product site
 
-- `web.output` is `single`: an SPA. `public/index.html` is Expo's page
-  template — the manifest, icons, link preview and dark-mode ground live there,
-  not in `app.json` (Expo would add duplicates of the favicon and
-  description).
-- `vercel.json` deploys the export from the repository root: the app at `/`,
-  the product site (`docs/`, copied in by `tools/bundle-docs.mjs`) at `/docs/`.
-  `npm run preview:web` serves `dist/` with the same rules.
-- The site is static HTML with no build step. Its tuning lists are generated
-  (`npm run site:tunings`) and `site.test.ts` fails when they drift from the
-  catalogue; `npm run check:site` fails on a missing file or unlabelled image.
+Two Vercel projects from this repository, on two domains (the addresses live
+in `src/theme/brand.ts` as `APP_URL` and `SITE_URL`):
+
+- **The web app**, `https://pontifork-online.bermeo.dev`: the repository root,
+  `vercel.json`. `web.output` is `single`, an SPA. `public/index.html` is
+  Expo's page template: manifest, icons, link preview, structured data and the
+  dark-mode ground live there, not in `app.json` (Expo would add duplicates of
+  the favicon and description). The old `/docs/…` addresses redirect to the site.
+- **The product site**, `https://pontifork.bermeo.dev`: Root Directory `docs`,
+  `docs/vercel.json`, static HTML with no build step. Its tuning lists are
+  generated (`npm run site:tunings`) and `site.test.ts` fails when they drift
+  from the catalogue.
+- `npm run preview:web` (port 4173) and `npm run preview:site` (4174) serve
+  each as Vercel will, from `tools/serve-web.mts`.
+
+### Search
+
+- Each route of the app renders `<PageMeta>` (`components/ui/PageMeta.web.tsx`,
+  `expo-router/head`): its title, description, canonical address and whether
+  it is indexed. The template marks those tags `data-rh` so the route's
+  replace them rather than doubling them, and has no canonical of its own (a
+  static one would contradict the route's). `PageMetaProvider` wraps the root
+  layout: a single-page build has no Head context otherwise. The apps render
+  nothing (`PageMeta.tsx`).
+- A new route that should be found gets `indexed` left on and a line in
+  `public/sitemap.xml`; one that shows the player's own data gets
+  `indexed={false}` and a `Disallow` in `public/robots.txt`.
+- `npm run check:site` (`tools/check-site.mts`) checks both pages' head,
+  cards, structured data, robots.txt and sitemap; read its header for the
+  rules. The site's JSON-LD `HowTo` must match the `#how-to` steps.
 - Screenshots and the tour video come from `npm run capture:shots`, which
-  drives the real web build with a synthetic tone. Re-run it after a visible
+  drives the real web build with a synthetic tone (and, for the chord book,
+  stored settings and a saved sequence). Re-run it after a visible
   change, then `npm run icons` for the link preview. See `docs/README.md`.
+
+## The Android APK
+
+`npm run apk` (`tools/build-apk.sh`) prebuilds `android/` from `app.json`
+when it is missing or older, builds `assembleRelease` for arm64 only, and
+copies the result to `releases/Pontifork-v<version>.apk`. On this Mac the JVM
+cannot open outbound connections, so Gradle goes through `tools/dev-proxy.mts`
+on loopback; the script starts and stops it. A release bumps `expo.version`
+and `android.versionCode` (and `ios.buildNumber`) together.
 
 ## Before you commit
 
@@ -145,9 +250,10 @@ file. See `assets/logo/README.md`.
 npm run verify
 ```
 
-Type check, lint (Expo config plus SonarJS, zero warnings), the tests and the
-site check. A justified lint exception gets an `eslint-disable-next-line <rule> -- reason`
-comment, never a blanket disable.
+Type check, lint (Expo config, typescript-eslint's strict type-checked rules
+and SonarJS, zero warnings), the tests and the site check. A justified lint
+exception gets an `eslint-disable-next-line <rule> -- reason` comment, never a
+blanket disable; the two file-scoped ones in `eslint.config.mjs` say why.
 
 <!-- graft:start -->
 ## Graft — repo context graph
