@@ -1,4 +1,4 @@
-import { requestRecordingPermissionsAsync, useAudioStream } from 'expo-audio';
+import { getRecordingPermissionsAsync, requestRecordingPermissionsAsync, useAudioStream } from 'expo-audio';
 import { useEffect, useRef, useState } from 'react';
 
 import { type MicSource, type MicStatus, type SampleSink, TARGET_SAMPLE_RATE, toMono } from './types';
@@ -23,17 +23,12 @@ interface Outcome {
   error: string | null;
 }
 
-/**
- * Only the resolved outcome is stored. "Idle" is a fact about `enabled` and
- * "requesting" is the absence of an answer, so both are derived — which keeps
- * every setState in this file inside an async continuation rather than
- * synchronously inside an effect, where it would cascade a render.
- */
 const PENDING: Outcome = { status: 'requesting', error: null };
 
 export function useMicSource(onSamples: SampleSink, enabled: boolean): MicSource {
   const [permission, setPermission] = useState<Outcome>(PENDING);
   const [streaming, setStreaming] = useState<Outcome | null>(null);
+  const [actualSampleRate, setActualSampleRate] = useState<number>(TARGET_SAMPLE_RATE);
 
   const sink = useRef(onSamples);
   // Written in an effect, not during render: a ref mutated mid-render is a
@@ -41,60 +36,90 @@ export function useMicSource(onSamples: SampleSink, enabled: boolean): MicSource
   // harmless.
   useEffect(() => { sink.current = onSamples; });
 
-  const { stream } = useAudioStream({
+  const { stream, isStreaming } = useAudioStream({
     sampleRate: TARGET_SAMPLE_RATE,
     channels: 1,
     encoding: 'float32',
     onBuffer: (buffer) => {
+      if (buffer.sampleRate > 0 && buffer.sampleRate !== actualSampleRate) {
+        setActualSampleRate(buffer.sampleRate);
+      }
       const samples = new Float32Array(buffer.data);
       sink.current(buffer.channels > 1 ? toMono(samples, buffer.channels) : samples);
     },
   });
 
-  const granted = permission.status !== 'denied' && permission.status !== 'error'
-    && permission.status !== 'requesting';
+  const granted = permission.status === 'running';
 
   useEffect(() => {
     if (!enabled) return;
     let cancelled = false;
+    const isCancelled = (): boolean => cancelled;
 
-    requestRecordingPermissionsAsync()
-      .then((response) => {
-        if (cancelled) return;
-        setPermission(response.granted
+    async function ensurePermission(): Promise<void> {
+      try {
+        const current = await getRecordingPermissionsAsync();
+        if (isCancelled()) return;
+        if (current.granted) {
+          setPermission({ status: 'running', error: null });
+          return;
+        }
+
+        const requested = await requestRecordingPermissionsAsync();
+        if (isCancelled()) return;
+        setPermission(requested.granted
           ? { status: 'running', error: null }
           : {
             status: 'denied',
             error: 'Microphone access was refused. Grant it in system settings so Pontifork can hear your instrument.',
           });
-      })
-      .catch((cause: unknown) => {
-        if (cancelled) return;
+      } catch (cause: unknown) {
+        if (isCancelled()) return;
         setPermission({
           status: 'error',
           error: cause instanceof Error ? cause.message : String(cause),
         });
-      });
+      }
+    }
+
+    void ensurePermission();
 
     return () => { cancelled = true; };
   }, [enabled]);
 
   useEffect(() => {
     if (!enabled || !granted) return;
-    let cancelled = false;
 
-    stream.start()
-      .then(() => { if (!cancelled) setStreaming({ status: 'running', error: null }); })
-      .catch((cause: unknown) => {
-        if (cancelled) return;
+    let cancelled = false;
+    const isCancelled = (): boolean => cancelled;
+    let retryTimer: ReturnType<typeof setTimeout> | null = null;
+
+    async function startStream(isRetry: boolean): Promise<void> {
+      try {
+        await stream.start();
+        if (!isCancelled()) {
+          setStreaming({ status: 'running', error: null });
+        }
+      } catch (cause: unknown) {
+        if (isCancelled()) return;
+        if (!isRetry) {
+          retryTimer = setTimeout(() => {
+            void startStream(true);
+          }, 200);
+          return;
+        }
         setStreaming({
           status: 'error',
           error: cause instanceof Error ? cause.message : String(cause),
         });
-      });
+      }
+    }
+
+    void startStream(false);
 
     return () => {
       cancelled = true;
+      if (retryTimer !== null) clearTimeout(retryTimer);
       try {
         stream.stop();
       } catch {
@@ -103,15 +128,29 @@ export function useMicSource(onSamples: SampleSink, enabled: boolean): MicSource
     };
   }, [enabled, granted, stream]);
 
-  const resolved = permission.status === 'denied' || permission.status === 'error'
-    ? permission
-    : (streaming ?? PENDING);
-  const status: MicStatus = enabled ? resolved.status : 'idle';
+  let status: MicStatus = 'idle';
+  let error: string | null = null;
+
+  if (enabled) {
+    if (permission.status === 'denied' || permission.status === 'error') {
+      status = permission.status;
+      error = permission.error;
+    } else if (isStreaming || streaming?.status === 'running') {
+      status = 'running';
+    } else if (streaming?.status === 'error') {
+      status = 'error';
+      error = streaming.error;
+    } else {
+      status = 'requesting';
+    }
+  }
+
+  const sampleRate = stream.sampleRate > 0 ? stream.sampleRate : actualSampleRate;
 
   return {
     status,
-    sampleRate: stream.sampleRate,
-    error: enabled ? resolved.error : null,
+    sampleRate,
+    error,
     live: status === 'running',
   };
 }

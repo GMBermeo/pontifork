@@ -57,6 +57,7 @@ export class FFT {
   private transform(re: Float32Array, im: Float32Array, invert: boolean): void {
     const n = this.size;
     const { reverse, cos, sin } = this;
+    const sign = invert ? 1 : -1;
 
     for (let i = 0; i < n; i++) {
       const j = reverse[i]!;
@@ -72,7 +73,7 @@ export class FFT {
       for (let i = 0; i < n; i += size) {
         for (let j = i, k = 0; j < i + half; j++, k += step) {
           const c = cos[k]!;
-          const s = invert ? sin[k]! : -sin[k]!;
+          const s = sign * sin[k]!;
           const l = j + half;
           const tre = re[l]! * c - im[l]! * s;
           const tim = re[l]! * s + im[l]! * c;
@@ -104,7 +105,7 @@ export function autocorrelate(
 
   re.fill(0);
   im.fill(0);
-  for (let i = 0; i < windowSize; i++) re[i] = x[i]!;
+  re.set(x.subarray(0, windowSize));
 
   fft.forward(re, im);
   for (let i = 0; i < n; i++) {

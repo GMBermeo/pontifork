@@ -128,20 +128,34 @@ export class RingBuffer {
   }
 
   write(samples: Float32Array, count = samples.length): void {
-    for (let i = 0; i < count; i++) {
-      this.buffer[this.writeIndex] = samples[i]!;
-      this.writeIndex = (this.writeIndex + 1) % this.capacity;
-    }
+    if (count <= 0) return;
     this.written += count;
+
+    let start = 0;
+    let toWrite = count;
+    if (toWrite > this.capacity) {
+      start = toWrite - this.capacity;
+      toWrite = this.capacity;
+    }
+
+    const firstChunk = Math.min(toWrite, this.capacity - this.writeIndex);
+    this.buffer.set(samples.subarray(start, start + firstChunk), this.writeIndex);
+    if (firstChunk < toWrite) {
+      this.buffer.set(samples.subarray(start + firstChunk, start + toWrite), 0);
+      this.writeIndex = toWrite - firstChunk;
+    } else {
+      this.writeIndex = (this.writeIndex + firstChunk) % this.capacity;
+    }
   }
 
   /** Copies the most recent `length` samples into `out` in chronological order. */
   readLatest(out: Float32Array, length: number): boolean {
     if (this.written < length || length > this.capacity) return false;
-    let index = (this.writeIndex - length + this.capacity) % this.capacity;
-    for (let i = 0; i < length; i++) {
-      out[i] = this.buffer[index]!;
-      index = index + 1 === this.capacity ? 0 : index + 1;
+    const startIndex = (this.writeIndex - length + this.capacity) % this.capacity;
+    const firstChunk = Math.min(length, this.capacity - startIndex);
+    out.set(this.buffer.subarray(startIndex, startIndex + firstChunk), 0);
+    if (firstChunk < length) {
+      out.set(this.buffer.subarray(0, length - firstChunk), firstChunk);
     }
     return true;
   }

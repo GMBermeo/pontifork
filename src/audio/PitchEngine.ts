@@ -64,12 +64,11 @@ const CROSSOVER_LOW_HZ = 190;
 const CROSSOVER_HIGH_HZ = 220;
 
 /**
- * How long a low-band reading stays usable. The low branch only produces a
- * result every other high hop (128 raw samples in yields 32 decimated, and a
- * low hop is 64), so without this the arbiter would see `null` on alternate
- * hops and publish "nothing sounding" over a perfectly good low note.
+ * How long a low-band reading stays usable (150 ms). The low branch only produces a
+ * result when the low branch is triggered, so without this the arbiter would see
+ * `null` and publish "nothing sounding" over a perfectly good low note.
  */
-const LOW_MAX_AGE_SAMPLES = HIGH_HOP * 4;
+const LOW_MAX_AGE_MS = 150;
 
 /** Two readings this close to a whole-number ratio are one note heard twice. */
 const HARMONIC_TOLERANCE_CENTS = 60;
@@ -111,7 +110,7 @@ export class PitchEngine {
 
   private readonly highFrame = new Float32Array(HIGH_WINDOW);
   private readonly lowFrame = new Float32Array(LOW_WINDOW);
-  private readonly decimated = new Float32Array(4096);
+  private decimated = new Float32Array(8192);
 
   private highPending = 0;
   private lowPending = 0;
@@ -128,8 +127,8 @@ export class PitchEngine {
     this.options = { maxFrequency, minFrequency, highBandConfidence, useOnsetGate };
     this.sampleRate = sampleRate;
 
-    this.highBuffer = new RingBuffer(HIGH_WINDOW * 4);
-    this.lowBuffer = new RingBuffer(LOW_WINDOW * 4);
+    this.highBuffer = new RingBuffer(Math.max(HIGH_WINDOW * 4, 8192));
+    this.lowBuffer = new RingBuffer(Math.max(LOW_WINDOW * 4, 4096));
     this.decimator = new Decimator(sampleRate, DECIMATION);
     this.highDetector = this.buildHighDetector(sampleRate);
     this.lowDetector = this.buildLowDetector();
@@ -191,6 +190,10 @@ export class PitchEngine {
     this.highBuffer.write(samples, count);
     this.highPending += count;
 
+    const neededDecimated = Math.ceil(count / DECIMATION);
+    if (this.decimated.length < neededDecimated) {
+      this.decimated = new Float32Array(neededDecimated);
+    }
     const produced = this.decimator.process(samples, count, this.decimated);
     if (produced > 0) {
       this.lowBuffer.write(this.decimated, produced);
@@ -217,36 +220,37 @@ export class PitchEngine {
   }
 
   private drain(): void {
-    while (this.highPending >= HIGH_HOP) {
-      this.highPending -= HIGH_HOP;
-      if (!this.highBuffer.readLatest(this.highFrame, HIGH_WINDOW)) continue;
+    if (this.highPending < HIGH_HOP) return;
 
-      const attacking = this.gate ? this.gate.push(this.highFrame, HIGH_HOP) : false;
-      const high = this.highDetector.detect(this.highFrame);
+    const elapsed = this.highPending;
+    this.highPending %= HIGH_HOP;
 
-      const needLowBand = !high.voiced
-        || high.clarity < this.options.highBandConfidence
-        || high.frequency < CROSSOVER_HIGH_HZ;
+    if (!this.highBuffer.readLatest(this.highFrame, HIGH_WINDOW)) return;
 
-      if (needLowBand && this.lowPending >= LOW_HOP) {
-        this.lowPending %= LOW_HOP;
-        if (this.lowBuffer.readLatest(this.lowFrame, LOW_WINDOW)) {
-          this.lastLow = {
-            result: this.lowDetector.detect(this.lowFrame),
-            sampleTime: this.highBuffer.written,
-          };
-        }
+    const attacking = this.gate ? this.gate.push(this.highFrame, elapsed) : false;
+    const high = this.highDetector.detect(this.highFrame);
+
+    const needLowBand = !high.voiced
+      || high.clarity < this.options.highBandConfidence
+      || high.frequency < CROSSOVER_HIGH_HZ;
+
+    if (needLowBand && this.lowPending >= LOW_HOP) {
+      this.lowPending %= LOW_HOP;
+      if (this.lowBuffer.readLatest(this.lowFrame, LOW_WINDOW)) {
+        this.lastLow = {
+          result: this.lowDetector.detect(this.lowFrame),
+          sampleTime: this.highBuffer.written,
+        };
       }
-
-      const low = this.lastLow;
-      const fresh = low !== null && this.highBuffer.written - low.sampleTime <= LOW_MAX_AGE_SAMPLES;
-
-      this.publish(high, fresh ? low.result : null, attacking);
+    } else {
+      this.lowPending %= LOW_HOP;
     }
 
-    // Keep the low branch's pending count from running away when the high
-    // branch never asks for it.
-    if (this.lowPending > LOW_HOP * 4) this.lowPending = LOW_HOP;
+    const low = this.lastLow;
+    const maxLowAgeSamples = Math.round((this.sampleRate * LOW_MAX_AGE_MS) / 1000);
+    const fresh = low !== null && this.highBuffer.written - low.sampleTime <= maxLowAgeSamples;
+
+    this.publish(high, fresh ? low.result : null, attacking);
   }
 
   private publish(high: PitchResult, low: PitchResult | null, attacking: boolean): void {
