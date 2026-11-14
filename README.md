@@ -17,7 +17,7 @@
   <img src="docs/assets/screenshots/tuner-cello-dark.webp" alt="Cello in the dark theme with all four strings ticked" width="200">
 </p>
 
-It is the tuner from [Ponticello](https://github.com/GMBermeo/ponticello)
+It is the tuner from [Ponticello](https://ponticello.bermeo.dev/)
 forked into an app of its own: the same dual-rate pitch engine, generalised
 from the cello's range to everything from a five-string bass in drop A
 (27.5 Hz) to the upper frets of a guitar. Built with Expo SDK 58 and React
