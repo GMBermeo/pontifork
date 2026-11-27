@@ -2,4 +2,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://pontifork.bermeo.dev/sitemap.xml
+Sitemap: https://fork.ponticello.app/sitemap.xml

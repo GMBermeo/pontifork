@@ -5,13 +5,13 @@ made the same way as Ponticello's (`../cello-hero/docs`).
 
 ## Where it is published
 
-At **https://pontifork.bermeo.dev**, as a Vercel project of its own: the
+At **https://fork.ponticello.app**, as a Vercel project of its own: the
 repository imported with **Root Directory** `docs`, **Framework Preset**
 *Other* and no build command, so this folder is served as it is. `vercel.json`
 here sets clean URLs, caching and headers; `.vercelignore` keeps this README
 out; `404.html` answers any address that is not a page.
 
-The tuner itself is a separate project at **https://pontifork-online.bermeo.dev**
+The tuner itself is a separate project at **https://fork-web.ponticello.app**
 (the repository root, see `../vercel.json`). The page's "Open the tuner"
 links go there, and the app's **Guide** button comes back here. The old
 `/docs/` addresses on the app's domain redirect to this site.

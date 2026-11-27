@@ -244,7 +244,7 @@ function hasType(node: Readonly<Record<string, unknown>>, type: string): boolean
 /** Addresses on Pontifork's domains must be ones it serves, and files it names must be deployed. */
 function checkStructuredLinks(page: Page, data: unknown, report: Report): void {
   for (const value of stringsIn(data)) {
-    if (!/^https?:\/\/[^/]*pontifork/.test(value)) continue;
+    if (!/^https?:\/\/[^/]*(?:pontifork|fork(?:-web)?\.ponticello\.app)/.test(value)) continue;
     const { origin } = new URL(value);
     report.expect(OUR_ORIGINS.includes(origin), `structured data links to an address Pontifork does not serve: ${value}`);
     const file = localFile(page, value);

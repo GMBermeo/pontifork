@@ -5,8 +5,8 @@
   "buildCommand": "npm run build:web",
   "outputDirectory": "dist",
   "redirects": [
-    { "source": "/docs", "destination": "https://pontifork.bermeo.dev/", "permanent": true },
-    { "source": "/docs/:path*", "destination": "https://pontifork.bermeo.dev/:path*", "permanent": true }
+    { "source": "/docs", "destination": "https://fork.ponticello.app/", "permanent": true },
+    { "source": "/docs/:path*", "destination": "https://fork.ponticello.app/:path*", "permanent": true }
   ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }

@@ -7,7 +7,7 @@
 <p align="center">
   Every string, in tune — a tuner and chord book for <strong>cello</strong>, <strong>guitar</strong> (6 and 7
   strings) and <strong>bass</strong> (4, 5 and 6 strings), for iOS, Android and any browser.<br>
-  <a href="https://pontifork-online.bermeo.dev/">Open the tuner</a> · <a href="https://pontifork.bermeo.dev/">Product site</a> · <a href="#the-chord-book">The chord book</a> · <a href="#publish-on-vercel">Publish on Vercel</a> · <a href="#the-icon">The icon</a>
+  <a href="https://fork-web.ponticello.app/">Open the tuner</a> · <a href="https://fork.ponticello.app/">Product site</a> · <a href="#the-chord-book">The chord book</a> · <a href="#publish-on-vercel">Publish on Vercel</a> · <a href="#the-icon">The icon</a>
 </p>
 
 <p align="center">
@@ -17,7 +17,7 @@
   <img src="docs/assets/screenshots/tuner-cello-dark.webp" alt="Cello in the dark theme with all four strings ticked" width="200">
 </p>
 
-It is the tuner from [Ponticello](https://ponticello.bermeo.dev/)
+It is the tuner from [Ponticello](https://github.com/GMBermeo/ponticello)
 forked into an app of its own: the same dual-rate pitch engine, generalised
 from the cello's range to everything from a five-string bass in drop A
 (27.5 Hz) to the upper frets of a guitar. Built with Expo SDK 58 and React
@@ -80,7 +80,7 @@ and capo in use.
 | Bass, 5 strings | Standard (B E A D G), half step down, whole step down · Drop A · High C (EADGC), QOTSA (D G G D G) |
 | Bass, 6 strings | Standard (B E A D G C), half step down, whole step down · Drop A · QOTSA (D G G D G D) |
 
-Every note of every tuning is on the [product site](https://pontifork.bermeo.dev/#tunings).
+Every note of every tuning is on the [product site](https://fork.ponticello.app/#tunings).
 
 ## Running it
 
@@ -115,12 +115,12 @@ repository, each on its own domain:
 
 | Project | Domain | Root Directory | Config |
 |---|---|---|---|
-| Web app | `pontifork-online.bermeo.dev` | repository root | [`vercel.json`](vercel.json) |
-| Product site | `pontifork.bermeo.dev` | `docs` | [`docs/vercel.json`](docs/vercel.json) |
+| Web app | `fork-web.ponticello.app` | repository root | [`vercel.json`](vercel.json) |
+| Product site | `fork.ponticello.app` | `docs` | [`docs/vercel.json`](docs/vercel.json) |
 
 **The web app.** Import the repository and leave **Root Directory** at the
 root; `vercel.json` sets the rest (*Other* framework, `npm ci`,
-`npm run build:web`, output in `dist/`). Add `pontifork-online.bermeo.dev`
+`npm run build:web`, output in `dist/`). Add `fork-web.ponticello.app`
 under **Domains**. `npm run build:web` is `expo export --platform web` (a
 single-page app: `web.output` is `single`), and `vercel.json`:
 
@@ -134,7 +134,7 @@ single-page app: `web.output` is `single`), and `vercel.json`:
 
 **The product site.** Import the repository again, set **Root Directory** to
 `docs` and **Framework Preset** to *Other*, leave the build command empty, and
-add `pontifork.bermeo.dev`. `docs/.vercelignore` keeps the maintainers' notes
+add `fork.ponticello.app`. `docs/.vercelignore` keeps the maintainers' notes
 out of it, and `docs/404.html` answers any address that is not a page.
 
 Both answer `X-Robots-Tag: noindex` on their `*.vercel.app` addresses, so
