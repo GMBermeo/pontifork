@@ -7,6 +7,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { Platform, useColorScheme } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Analytics } from '@vercel/analytics/react';
 
 import { PageMetaProvider } from '@components';
 import { ThemeProvider, useTheme } from '@theme';
@@ -57,6 +58,7 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <ThemeProvider chrome={scheme === 'dark' ? 'quiet' : 'paper'}>
           <Navigator />
+          {Platform.OS === 'web' && <Analytics />}
         </ThemeProvider>
       </SafeAreaProvider>
     </PageMetaProvider>

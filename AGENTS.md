@@ -215,12 +215,12 @@ file. See `assets/logo/README.md`.
 Two Vercel projects from this repository, on two domains (the addresses live
 in `src/theme/brand.ts` as `APP_URL` and `SITE_URL`):
 
-- **The web app**, `https://pontifork-online.bermeo.dev`: the repository root,
+- **The web app**, `https://fork-web.ponticello.app`: the repository root,
   `vercel.json`. `web.output` is `single`, an SPA. `public/index.html` is
   Expo's page template: manifest, icons, link preview, structured data and the
   dark-mode ground live there, not in `app.json` (Expo would add duplicates of
   the favicon and description). The old `/docs/…` addresses redirect to the site.
-- **The product site**, `https://pontifork.bermeo.dev`: Root Directory `docs`,
+- **The product site**, `https://fork.ponticello.app`: Root Directory `docs`,
   `docs/vercel.json`, static HTML with no build step. Its tuning lists are
   generated (`npm run site:tunings`) and `site.test.ts` fails when they drift
   from the catalogue.

@@ -5,4 +5,4 @@ Allow: /
 Disallow: /sequence
 Disallow: /sequences
 
-Sitemap: https://pontifork-online.bermeo.dev/sitemap.xml
+Sitemap: https://fork-web.ponticello.app/sitemap.xml

@@ -9,9 +9,9 @@
 
 ## Links
 
-- [The tuner, in a browser](https://pontifork-online.bermeo.dev/): the web app.
-- [The chord book](https://pontifork-online.bermeo.dev/chords): every chord in the tuning in use.
-- [Product site](https://pontifork.bermeo.dev/): features, a six-step guide to tuning, and every tuning note by note.
+- [The tuner, in a browser](https://fork-web.ponticello.app/): the web app.
+- [The chord book](https://fork-web.ponticello.app/chords): every chord in the tuning in use.
+- [Product site](https://fork.ponticello.app/): features, a six-step guide to tuning, and every tuning note by note.
 - [Source code](https://github.com/GMBermeo/pontifork): MIT licensed.
 - [Releases](https://github.com/GMBermeo/pontifork/releases): the Android APK.
 - [Ponticello app](https://ponticello.bermeo.dev/): cello practice app the tuner was forked from.
